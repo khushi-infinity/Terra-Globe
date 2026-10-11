@@ -821,9 +821,10 @@ Daily Outdoor Exposure: ${exposureHours} hours/day
 Calculated Organ Acceleration: Lungs +${lungDeltaYears} yrs, Heart +${heartDeltaYears} yrs, Skin +${skinDeltaYears} yrs, Brain +${brainDeltaYears} yrs.
 Life Expectancy Depletion: -${hoursLostPerMonth} hours/month.
 
-Provide:
-1. A concise, scary yet rigorously scientific diagnosis (2-3 sentences) explaining the biological pathology (alveolar macrophage breakdown, microvascular endothelial inflammation, translocated ultrafine PM2.5 crossing blood-brain barrier).
-2. Exactly 4 bulleted clinical preventative recommendations.`;
+Formatting Requirements:
+Write in clear, human-readable prose. Do NOT use markdown hashes (###) or awkward formatting.
+1. Provide a concise, scientifically rigorous toxicological diagnosis (2-3 sentences) explaining the biological pathology.
+2. Provide exactly 4 practical clinical preventative recommendations, each starting with a simple dash (-).`;
 
         const response = await ai.models.generateContent({
           model: 'gemini-3.8-flash',
@@ -834,7 +835,30 @@ Provide:
         });
 
         if (response.text) {
-          aiScientificExplanation = response.text.trim();
+          const raw = response.text.trim();
+          // Extract bullets if provided by Gemini
+          const extractedBullets = raw
+            .split('\n')
+            .filter(l => /^[-*•]\s+/.test(l.trim()))
+            .map(l => l.replace(/^[-*•]\s+/, '').replace(/\*\*/g, '').trim());
+
+          if (extractedBullets.length >= 3) {
+            clinicalRecommendations = extractedBullets.slice(0, 4);
+          }
+
+          // Clean explanation of raw markdown symbols for human reading
+          const cleanExplanation = raw
+            .split('\n')
+            .filter(l => !/^[-*•]\s+/.test(l.trim()))
+            .join(' ')
+            .replace(/#{1,4}\s+/g, '')
+            .replace(/\*\*/g, '')
+            .replace(/Diagnosis:\s*/i, '')
+            .trim();
+
+          if (cleanExplanation.length > 20) {
+            aiScientificExplanation = cleanExplanation;
+          }
         }
       } catch (geminiErr) {
         console.warn('Gemini Biological Age AI generation fell back to deterministic model:', geminiErr);
@@ -842,7 +866,7 @@ Provide:
     }
 
     if (!aiScientificExplanation) {
-      aiScientificExplanation = `Ambient particulate inhalation at ${numPM25} µg/m³ triggers continuous alveolar oxidative stress and interleukin-6 systemic cascade. Ultrafine PM2.5 (<0.1 µm) penetrates the alveolar-capillary barrier directly into arterial circulation, accelerating coronary plaque destabilization and microvascular senescence, resulting in an estimated +${totalBioDelta} years of premature biological degradation.`;
+      aiScientificExplanation = `Ambient particulate inhalation at ${numPM25} µg/m³ triggers continuous alveolar oxidative stress and interleukin-6 systemic cascade. Ultrafine PM2.5 penetrates the alveolar-capillary barrier directly into arterial circulation, accelerating coronary plaque destabilization and microvascular senescence, resulting in an estimated +${totalBioDelta} years of premature biological degradation.`;
     }
 
     const payload = {
@@ -943,13 +967,28 @@ app.post('/api/gemini/chat', async (req: Request, res: Response) => {
     const systemInstruction = `You are TERRA-AI, the advanced environmental intelligence copilot for the TERRA 3D Environmental Digital Twin platform.
 Your mission is: "See the environment. Understand it. Personalize it. Change it."
 Current City Context: ${cityContext ? JSON.stringify(cityContext) : 'Active City Digital Twin'}.
-Be concise, scientific, highly analytical, authoritative, yet inspiring.`;
+Be concise, scientific, highly analytical, authoritative, yet inspiring.
+
+IMPORTANT HUMAN-READABILITY GUIDELINES:
+- Deliver your insights in clean, structured, easily readable human language.
+- DO NOT output raw markdown symbols like hashes (###), nested raw markdown tables, or excessive symbols.
+- Use natural section titles (e.g. Atmospheric Diagnostics:, Microclimate Impact:, Action Recommendations:), clear paragraphs, and simple bullet points (-).
+- Clearly explain air quality indexes, biological health impacts, and urban interventions so both citizens and specialists can immediately take action.`;
 
     if (!isValidKey) {
       return res.json({
-        reply: `**TERRA Environmental Intelligence Analysis (${cityContext?.city || 'Active Twin'})**:
-- **Atmospheric Diagnostics**: The regional atmospheric field demonstrates typical urban aerosol stratification. Particulate levels correlate with transport network density.
-- **Biological Age Correlation**: Ambient PM2.5 levels indicate active alveolar oxidative stress. Recommended action is to prioritize bio-filters and clean transit corridors.`
+        reply: `Environmental Intelligence Analysis for ${cityContext?.city || 'Active Twin'}:
+
+Atmospheric Sensor Diagnostics:
+The regional atmospheric field demonstrates typical urban aerosol stratification. Particulate levels correlate with transport network density and local dispersion rates.
+
+Biological Health Correlation:
+Ambient PM2.5 levels indicate active alveolar oxidative stress. Recommended action is to prioritize bio-filters and clean transit corridors.
+
+Strategic Urban Interventions:
+- Expand vegetative green buffers along high-traffic corridors to reduce particulate drift.
+- Maintain indoor HEPA air filtration during peak inversion hours.
+- Utilize citizen incident flags to identify and suppress localized waste or industrial combustion.`
       });
     }
 
@@ -967,12 +1006,17 @@ Be concise, scientific, highly analytical, authoritative, yet inspiring.`;
       }
     });
 
-    res.json({ reply: response.text || 'Telemetry analyzed. No anomalies detected.' });
+    res.json({ reply: response.text || 'Telemetry analyzed. Sensor indicators within calibrated margins.' });
   } catch {
     res.json({
-      reply: `**TERRA Environmental Intelligence Analysis (${req.body?.cityContext?.city || 'Active Twin'})**:
-- **Atmospheric Diagnostics**: Active regional particulate monitoring.
-- **Action**: Monitor biological age impact and file ground truth flags for severe hotspots.`
+      reply: `Environmental Intelligence Analysis for ${req.body?.cityContext?.city || 'Active Twin'}:
+
+Atmospheric Diagnostics:
+Regional particulate monitoring indicates active atmospheric loading.
+
+Action Guidelines:
+- Monitor biological age impact and lung exposure metrics.
+- File ground truth incident flags for severe smoke or toxic plumes.`
     });
   }
 });

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useAppStore } from '../../store/useAppStore';
+import { useTranslation } from '../../i18n/useTranslation';
 import {
   Wind,
-  Trees,
   Thermometer,
   Droplets,
   ChevronDown,
@@ -11,11 +11,11 @@ import {
   MapPin,
   Globe2,
   Activity,
-  ShieldCheck,
-  Sparkles
+  ShieldCheck
 } from 'lucide-react';
 
 export const MetricHUD: React.FC = () => {
+  const { t } = useTranslation();
   const currentLocation = useAppStore(s => s.currentLocation);
   const cameraMode = useAppStore(s => s.cameraMode);
   const displayedMetrics = useAppStore(s => s.displayedMetrics);
@@ -36,54 +36,54 @@ export const MetricHUD: React.FC = () => {
   const getAQIInfo = (val: number) => {
     if (val <= 50) {
       return {
-        label: 'Good Air',
+        label: t('hud.good_air', 'Good Air'),
         bg: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40',
         color: '#10b981',
-        advice: 'Air quality is satisfactory. It is safe for all outdoor activities.',
+        advice: t('hud.advice_good', 'Air quality is satisfactory. It is safe for all outdoor activities.'),
         percent: Math.min(100, (val / 500) * 100)
       };
     }
     if (val <= 100) {
       return {
-        label: 'Moderate',
+        label: t('hud.moderate', 'Moderate'),
         bg: 'bg-amber-500/20 text-amber-300 border-amber-500/40',
         color: '#f59e0b',
-        advice: 'Air quality is acceptable. Sensitive individuals should avoid prolonged exertion.',
+        advice: t('hud.advice_moderate', 'Air quality is acceptable. Sensitive individuals should avoid prolonged exertion.'),
         percent: Math.min(100, (val / 500) * 100)
       };
     }
     if (val <= 150) {
       return {
-        label: 'Unhealthy for Sensitive',
+        label: t('hud.sensitive', 'Unhealthy for Sensitive'),
         bg: 'bg-orange-500/20 text-orange-300 border-orange-500/40',
         color: '#f97316',
-        advice: 'Members of sensitive groups may experience health effects. General public not likely affected.',
+        advice: t('hud.advice_sensitive', 'Members of sensitive groups may experience health effects. General public not likely affected.'),
         percent: Math.min(100, (val / 500) * 100)
       };
     }
     if (val <= 200) {
       return {
-        label: 'Unhealthy',
+        label: t('hud.unhealthy', 'Unhealthy'),
         bg: 'bg-red-500/20 text-red-300 border-red-500/40',
         color: '#ef4444',
-        advice: 'Everyone may begin to experience health effects; wear N95 mask outside.',
+        advice: t('hud.advice_unhealthy', 'Everyone may begin to experience health effects; wear N95 mask outside.'),
         percent: Math.min(100, (val / 500) * 100)
       };
     }
     if (val <= 300) {
       return {
-        label: 'Very Unhealthy',
+        label: t('hud.very_unhealthy', 'Very Unhealthy'),
         bg: 'bg-purple-500/20 text-purple-300 border-purple-500/40',
         color: '#a855f7',
-        advice: 'Health alert: serious risk for the entire population. Avoid strenuous outdoor activity.',
+        advice: t('hud.advice_very_unhealthy', 'Health alert: serious risk for the entire population. Avoid strenuous outdoor activity.'),
         percent: Math.min(100, (val / 500) * 100)
       };
     }
     return {
-      label: 'Hazardous',
+      label: t('hud.hazardous', 'Hazardous'),
       bg: 'bg-rose-950/70 text-rose-200 border-rose-500/60',
       color: '#e11d48',
-      advice: 'Emergency warning: Entire population is affected. Stay indoors and run air filters.',
+      advice: t('hud.advice_hazardous', 'Emergency warning: Entire population is affected. Stay indoors and run air filters.'),
       percent: Math.min(100, (val / 500) * 100)
     };
   };
@@ -105,7 +105,7 @@ export const MetricHUD: React.FC = () => {
             <div className="min-w-0">
               <div className="flex items-center gap-1.5 leading-none">
                 <h2 className="text-sm font-bold tracking-tight text-white truncate max-w-[170px]">
-                  {isGlobal ? 'Planetary Earth' : currentLocation.name}
+                  {isGlobal ? t('hud.planetary_aggregate', 'Planetary Earth') : currentLocation.name}
                 </h2>
                 <span className="flex h-2 w-2 relative flex-shrink-0">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
@@ -114,7 +114,7 @@ export const MetricHUD: React.FC = () => {
               </div>
               <p className="text-[10px] text-slate-400 font-medium truncate mt-0.5">
                 {isGlobal
-                  ? 'Global Satellite Telemetry'
+                  ? t('hud.surface_station', 'Global Satellite Telemetry')
                   : `${currentLocation.country} ${currentLocation.population ? `• Pop: ${currentLocation.population}` : ''}`}
               </p>
             </div>
@@ -136,7 +136,7 @@ export const MetricHUD: React.FC = () => {
             <div className="p-3 rounded-xl bg-white/5 border border-white/5 relative overflow-hidden">
               <div className="flex items-baseline justify-between mb-1.5">
                 <span className="text-[10px] uppercase font-mono tracking-wider text-slate-400">
-                  Air Quality Index (AQI)
+                  {t('hud.aqi_index', 'Air Quality Index (AQI)')}
                 </span>
                 <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${aqiInfo.bg}`}>
                   {aqiInfo.label}
@@ -165,17 +165,17 @@ export const MetricHUD: React.FC = () => {
                   />
                 </div>
                 <div className="flex justify-between text-[8px] font-mono text-slate-500">
-                  <span>0 (Good)</span>
+                  <span>0 ({t('hud.good_air', 'Good')})</span>
                   <span>100</span>
                   <span>200</span>
-                  <span>500 (Hazard)</span>
+                  <span>500 ({t('hud.hazardous', 'Hazard')})</span>
                 </div>
               </div>
 
               {/* Health Advisory */}
               <div className="mt-2.5 p-2 rounded-lg bg-black/40 border border-white/5 text-[10.5px] leading-tight text-slate-300">
                 <span className="text-slate-400 font-semibold block text-[9.5px] uppercase tracking-wide mb-0.5">
-                  Guidance:
+                  {t('hud.health_advisory', 'Health Advisory')}:
                 </span>
                 {aqiInfo.advice}
               </div>
@@ -186,7 +186,7 @@ export const MetricHUD: React.FC = () => {
               <div className="p-2.5 rounded-xl bg-white/5 border border-white/5">
                 <div className="flex items-center gap-1.5 text-slate-400 text-[10px] mb-1">
                   <Wind className="w-3.5 h-3.5 text-cyan-400" />
-                  <span>PM2.5 Fine</span>
+                  <span className="truncate">{t('hud.pm25', 'PM2.5 Fine Dust')}</span>
                 </div>
                 <div className="flex items-baseline gap-1">
                   <span className="text-base font-bold text-white font-mono">{pm25.toFixed(1)}</span>
@@ -197,7 +197,7 @@ export const MetricHUD: React.FC = () => {
               <div className="p-2.5 rounded-xl bg-white/5 border border-white/5">
                 <div className="flex items-center gap-1.5 text-slate-400 text-[10px] mb-1">
                   <Activity className="w-3.5 h-3.5 text-amber-400" />
-                  <span>PM10 Inhalable</span>
+                  <span className="truncate">{t('hud.pm10', 'PM10 Coarse Dust')}</span>
                 </div>
                 <div className="flex items-baseline gap-1">
                   <span className="text-base font-bold text-white font-mono">{pm10.toFixed(1)}</span>
@@ -208,7 +208,7 @@ export const MetricHUD: React.FC = () => {
               <div className="p-2.5 rounded-xl bg-white/5 border border-white/5">
                 <div className="flex items-center gap-1.5 text-slate-400 text-[10px] mb-1">
                   <Thermometer className="w-3.5 h-3.5 text-rose-400" />
-                  <span>Ambient Temp</span>
+                  <span className="truncate">{t('hud.temp', 'Temperature')}</span>
                 </div>
                 <div className="flex items-baseline gap-1">
                   <span className="text-base font-bold text-white font-mono">{temp.toFixed(1)}</span>
@@ -219,7 +219,7 @@ export const MetricHUD: React.FC = () => {
               <div className="p-2.5 rounded-xl bg-white/5 border border-white/5">
                 <div className="flex items-center gap-1.5 text-slate-400 text-[10px] mb-1">
                   <Droplets className="w-3.5 h-3.5 text-blue-400" />
-                  <span>Humidity</span>
+                  <span className="truncate">{t('hud.humidity', 'Humidity')}</span>
                 </div>
                 <div className="flex items-baseline gap-1">
                   <span className="text-base font-bold text-white font-mono">{humidity}</span>
@@ -239,18 +239,22 @@ export const MetricHUD: React.FC = () => {
               <div className="flex items-center gap-2">
                 <HeartPulse className="w-4 h-4 text-rose-400 group-hover:scale-110 transition-transform" />
                 <div>
-                  <span className="text-[11px] font-bold text-rose-200 block">Biological Age Risk</span>
-                  <span className="text-[9px] text-rose-300/80">View epidemiological organ impact</span>
+                  <span className="text-[11px] font-bold text-rose-200 block">
+                    {t('hud.calculate_bio_age', 'Calculate Biological Age')}
+                  </span>
+                  <span className="text-[9px] text-rose-300/80">
+                    {t('bioage.subtitle', 'Clinical assessment of PM2.5 cellular aging')}
+                  </span>
                 </div>
               </div>
-              <span className="text-[10px] font-bold text-rose-400">View ›</span>
+              <span className="text-[10px] font-bold text-rose-400">›</span>
             </button>
 
             {/* Verified Data Source Footer */}
             <div className="pt-2 border-t border-white/5 flex items-center justify-between text-[9px] text-slate-400">
               <span className="flex items-center gap-1">
                 <ShieldCheck className="w-3 h-3 text-emerald-400" />
-                Live Sensor Telemetry
+                {t('hud.live_feed', 'LIVE SENSOR FEED')}
               </span>
               <span className="font-mono">Open-Meteo Verified</span>
             </div>

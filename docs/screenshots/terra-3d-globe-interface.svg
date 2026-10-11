@@ -1,0 +1,241 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradient -->
+    <radialGradient id="spaceGrad" cx="50%" cy="50%" r="75%">
+      <stop offset="0%" stop-color="#0b111e"/>
+      <stop offset="50%" stop-color="#070a12"/>
+      <stop offset="100%" stop-color="#020408"/>
+    </radialGradient>
+
+    <!-- Earth Radial Glow -->
+    <radialGradient id="earthGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#102a45"/>
+      <stop offset="65%" stop-color="#0b1e33"/>
+      <stop offset="90%" stop-color="#006699"/>
+      <stop offset="100%" stop-color="#00e5ff" stop-opacity="0.8"/>
+    </radialGradient>
+
+    <radialGradient id="atmoHalo" cx="50%" cy="50%" r="50%">
+      <stop offset="85%" stop-color="#00ffcc" stop-opacity="0"/>
+      <stop offset="95%" stop-color="#00e5ff" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#38bdf8" stop-opacity="0.9"/>
+    </radialGradient>
+
+    <!-- Card Glass Gradient -->
+    <linearGradient id="glassCard" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#141c2e" stop-opacity="0.88"/>
+      <stop offset="100%" stop-color="#0a0f1d" stop-opacity="0.95"/>
+    </linearGradient>
+
+    <linearGradient id="brandGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#34d399"/>
+      <stop offset="50%" stop-color="#14b8a6"/>
+      <stop offset="100%" stop-color="#059669"/>
+    </linearGradient>
+
+    <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#000000" flood-opacity="0.6"/>
+    </filter>
+
+    <filter id="glowFilter" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <style>
+    .font-sans { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    .font-mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+  </style>
+
+  <!-- Deep Cosmos Background -->
+  <rect width="1200" height="675" fill="url(#spaceGrad)"/>
+
+  <!-- Star Field Elements -->
+  <circle cx="120" cy="90" r="1.2" fill="#ffffff" opacity="0.6"/>
+  <circle cx="280" cy="140" r="1.5" fill="#38bdf8" opacity="0.8"/>
+  <circle cx="450" cy="80" r="1" fill="#ffffff" opacity="0.4"/>
+  <circle cx="950" cy="120" r="1.8" fill="#ffffff" opacity="0.7"/>
+  <circle cx="1080" cy="220" r="1.2" fill="#34d399" opacity="0.6"/>
+  <circle cx="820" cy="85" r="1" fill="#ffffff" opacity="0.5"/>
+  <circle cx="150" cy="420" r="1.5" fill="#ffffff" opacity="0.4"/>
+  <circle cx="1120" cy="540" r="1.2" fill="#ffffff" opacity="0.5"/>
+  <circle cx="680" cy="620" r="1.4" fill="#38bdf8" opacity="0.4"/>
+
+  <!-- 3D Planetary Earth Visualization -->
+  <g transform="translate(680, 360)">
+    <!-- Atmosphere Outer Ring -->
+    <circle cx="0" cy="0" r="235" fill="none" stroke="#00e5ff" stroke-width="1.5" opacity="0.25" stroke-dasharray="4 8"/>
+    <circle cx="0" cy="0" r="220" fill="url(#atmoHalo)"/>
+
+    <!-- Earth Body -->
+    <circle cx="0" cy="0" r="210" fill="url(#earthGlow)"/>
+
+    <!-- Stylized Continents & Lat/Long Grid -->
+    <ellipse cx="0" cy="0" rx="210" ry="80" fill="none" stroke="#38bdf8" stroke-width="0.8" opacity="0.25"/>
+    <ellipse cx="0" cy="0" rx="210" ry="160" fill="none" stroke="#38bdf8" stroke-width="0.8" opacity="0.2"/>
+    <ellipse cx="0" cy="0" rx="90" ry="210" fill="none" stroke="#38bdf8" stroke-width="0.8" opacity="0.25"/>
+
+    <!-- Landmass Shapes (Abstract Vector) -->
+    <path d="M-80,-120 Q-30,-140 30,-110 Q90,-90 120,-30 Q140,40 100,100 Q40,150 -20,130 Q-90,110 -130,50 Q-150,-30 -80,-120 Z" fill="#1e3a5f" opacity="0.65"/>
+    <path d="M-40,-80 Q10,-90 60,-60 Q80,-10 50,40 Q-10,70 -60,40 Q-90,-10 -40,-80 Z" fill="#2d5a7b" opacity="0.75"/>
+
+    <!-- Heatmap Particle Points (AQI Hotspots on Globe) -->
+    <circle cx="35" cy="-25" r="14" fill="#ef4444" opacity="0.75" filter="url(#glowFilter)"/>
+    <circle cx="35" cy="-25" r="4" fill="#ffffff"/>
+    <circle cx="85" cy="15" r="10" fill="#f59e0b" opacity="0.7" filter="url(#glowFilter)"/>
+    <circle cx="-60" cy="10" r="11" fill="#10b981" opacity="0.65" filter="url(#glowFilter)"/>
+    <circle cx="-15" cy="65" r="12" fill="#ef4444" opacity="0.7" filter="url(#glowFilter)"/>
+
+    <!-- Telemetry Pin Label: New Delhi -->
+    <g transform="translate(45, -35)">
+      <line x1="0" y1="0" x2="35" y2="-25" stroke="#38bdf8" stroke-width="1.5"/>
+      <rect x="35" y="-42" width="135" height="32" rx="8" fill="#0d1527" stroke="#38bdf8" stroke-width="1" opacity="0.95"/>
+      <text x="45" y="-28" fill="#ffffff" font-size="10" font-weight="bold" class="font-sans">New Delhi, IN</text>
+      <text x="45" y="-16" fill="#f87171" font-size="9" font-family="monospace">AQI 178 • Unhealthy</text>
+    </g>
+  </g>
+
+  <!-- TOP CONTINUOUS CONTROL PANEL (6 Controls + Brand + Lang) -->
+  <g transform="translate(0, 0)">
+    <!-- Header Background Bar -->
+    <rect x="0" y="0" width="1200" height="58" fill="#080c14" fill-opacity="0.94" stroke="#ffffff" stroke-width="1" stroke-opacity="0.1"/>
+
+    <!-- 1. Brand Logo: TERRA -->
+    <g transform="translate(24, 13)">
+      <rect x="0" y="0" width="32" height="32" rx="8" fill="url(#brandGrad)"/>
+      <text x="10" y="22" fill="#04120c" font-size="16" font-weight="900" class="font-sans">T</text>
+      <text x="42" y="18" fill="#ffffff" font-size="14" font-weight="900" letter-spacing="1.5" class="font-sans">TERRA</text>
+      <rect x="102" y="7" width="36" height="15" rx="4" fill="#10b981" fill-opacity="0.2" stroke="#10b981" stroke-width="0.8"/>
+      <text x="108" y="18" fill="#6ee7b7" font-size="8" font-weight="bold" font-family="monospace">LIVE</text>
+      <text x="42" y="29" fill="#94a3b8" font-size="9" class="font-sans">Global Environmental Intelligence</text>
+    </g>
+
+    <!-- Center Control Strip (Exact User Ordered 6 Controls) -->
+    <g transform="translate(290, 11)">
+      <!-- 1. Global / 3D View Button -->
+      <rect x="0" y="0" width="90" height="36" rx="10" fill="#10b981" stroke="#34d399" stroke-width="1"/>
+      <circle cx="16" cy="18" r="5" fill="#04120c"/>
+      <text x="28" y="22" fill="#04120c" font-size="11" font-weight="700" class="font-sans">3D Globe</text>
+
+      <!-- 2. Search City or Place Input -->
+      <rect x="98" y="0" width="220" height="36" rx="10" fill="#0f172a" stroke="#ffffff" stroke-opacity="0.15" stroke-width="1"/>
+      <circle cx="114" cy="18" r="4.5" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+      <line x1="117" y1="21" x2="122" y2="26" stroke="#94a3b8" stroke-width="1.2"/>
+      <text x="128" y="22" fill="#cbd5e1" font-size="11" class="font-sans">Search city or place worldwide...</text>
+
+      <!-- 3. Air Quality Map Button -->
+      <rect x="326" y="0" width="118" height="36" rx="10" fill="#ffffff" fill-opacity="0.06" stroke="#ffffff" stroke-opacity="0.1" stroke-width="1"/>
+      <text x="340" y="22" fill="#e2e8f0" font-size="11" font-weight="600" class="font-sans">Air Quality Map</text>
+
+      <!-- 4. Community Feed Button -->
+      <rect x="452" y="0" width="118" height="36" rx="10" fill="#ffffff" fill-opacity="0.06" stroke="#ffffff" stroke-opacity="0.1" stroke-width="1"/>
+      <text x="466" y="22" fill="#e2e8f0" font-size="11" font-weight="600" class="font-sans">Community Feed</text>
+
+      <!-- 5. Health Impact Button -->
+      <rect x="578" y="0" width="108" height="36" rx="10" fill="#4c0519" fill-opacity="0.6" stroke="#f43f5e" stroke-opacity="0.5" stroke-width="1"/>
+      <circle cx="592" cy="18" r="3" fill="#f43f5e"/>
+      <text x="602" y="22" fill="#fda4af" font-size="11" font-weight="600" class="font-sans">Health Impact</text>
+
+      <!-- 6. Report Hazard Button -->
+      <rect x="694" y="0" width="108" height="36" rx="10" fill="#f59e0b" stroke="#fbbf24" stroke-width="1"/>
+      <text x="708" y="22" fill="#020617" font-size="11" font-weight="800" class="font-sans">Report Hazard</text>
+    </g>
+
+    <!-- Right Controls: Global Language Selector & User Profile -->
+    <g transform="translate(1080, 11)">
+      <!-- Language Dropdown -->
+      <rect x="-60" y="0" width="90" height="36" rx="10" fill="#1e293b" fill-opacity="0.8" stroke="#ffffff" stroke-opacity="0.15" stroke-width="1"/>
+      <text x="-48" y="22" fill="#38bdf8" font-size="12">🌐</text>
+      <text x="-28" y="22" fill="#ffffff" font-size="11" font-weight="600" class="font-sans">English</text>
+      <text x="18" y="22" fill="#94a3b8" font-size="9">▼</text>
+
+      <!-- User Avatar -->
+      <rect x="40" y="0" width="36" height="36" rx="10" fill="#1e293b" stroke="#ffffff" stroke-opacity="0.15" stroke-width="1"/>
+      <circle cx="58" cy="15" r="5" fill="#94a3b8"/>
+      <path d="M50,28 Q58,22 66,28" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
+    </g>
+  </g>
+
+  <!-- LEFT HUD: LIVE SENSOR TELEMETRY METRIC PANEL -->
+  <g transform="translate(24, 76)" filter="url(#cardShadow)">
+    <rect x="0" y="0" width="290" height="420" rx="20" fill="url(#glassCard)" stroke="#ffffff" stroke-width="1" stroke-opacity="0.1"/>
+
+    <!-- Header -->
+    <g transform="translate(18, 24)">
+      <text x="0" y="0" fill="#38bdf8" font-size="9" font-family="monospace" letter-spacing="1">GROUND TELEMETRY • LIVE</text>
+      <text x="0" y="20" fill="#ffffff" font-size="16" font-weight="800" class="font-sans">New Delhi Metro</text>
+      <text x="0" y="34" fill="#94a3b8" font-size="10" class="font-sans">Lat: 28.6139° N, Lon: 77.2090° E</text>
+    </g>
+
+    <!-- Large AQI Circle / Badge -->
+    <g transform="translate(18, 80)">
+      <rect x="0" y="0" width="254" height="84" rx="16" fill="#7f1d1d" fill-opacity="0.45" stroke="#ef4444" stroke-opacity="0.5" stroke-width="1"/>
+      <text x="16" y="24" fill="#fca5a5" font-size="10" font-family="monospace">AIR QUALITY INDEX (US AQI)</text>
+      <text x="16" y="60" fill="#ffffff" font-size="34" font-weight="900" font-family="monospace">178</text>
+      <rect x="110" y="36" width="130" height="24" rx="12" fill="#ef4444" fill-opacity="0.3" stroke="#ef4444" stroke-width="1"/>
+      <text x="122" y="52" fill="#fecaca" font-size="10" font-weight="bold" class="font-sans">Unhealthy Condition</text>
+    </g>
+
+    <!-- Pollutant Breakdown Grid -->
+    <g transform="translate(18, 180)">
+      <!-- PM2.5 -->
+      <rect x="0" y="0" width="122" height="62" rx="12" fill="#000000" fill-opacity="0.4" stroke="#ffffff" stroke-opacity="0.08" stroke-width="1"/>
+      <text x="12" y="18" fill="#94a3b8" font-size="9" class="font-sans">PM2.5 Mass</text>
+      <text x="12" y="38" fill="#f87171" font-size="16" font-weight="bold" font-family="monospace">88.4 <tspan font-size="10">µg/m³</tspan></text>
+      <text x="12" y="52" fill="#f87171" font-size="8" font-family="monospace">17.6x WHO limit</text>
+
+      <!-- PM10 -->
+      <rect x="132" y="0" width="122" height="62" rx="12" fill="#000000" fill-opacity="0.4" stroke="#ffffff" stroke-opacity="0.08" stroke-width="1"/>
+      <text x="144" y="18" fill="#94a3b8" font-size="9" class="font-sans">PM10 Coarse</text>
+      <text x="144" y="38" fill="#fbbf24" font-size="16" font-weight="bold" font-family="monospace">152 <tspan font-size="10">µg/m³</tspan></text>
+      <text x="144" y="52" fill="#fbbf24" font-size="8" font-family="monospace">3.4x WHO limit</text>
+    </g>
+
+    <!-- Meteorology Row -->
+    <g transform="translate(18, 256)">
+      <!-- Temp -->
+      <rect x="0" y="0" width="80" height="48" rx="10" fill="#000000" fill-opacity="0.3" stroke="#ffffff" stroke-opacity="0.06"/>
+      <text x="10" y="16" fill="#94a3b8" font-size="8" class="font-sans">Temp</text>
+      <text x="10" y="34" fill="#38bdf8" font-size="13" font-weight="bold" font-family="monospace">29.4°C</text>
+
+      <!-- Humidity -->
+      <rect x="87" y="0" width="80" height="48" rx="10" fill="#000000" fill-opacity="0.3" stroke="#ffffff" stroke-opacity="0.06"/>
+      <text x="97" y="16" fill="#94a3b8" font-size="8" class="font-sans">Humidity</text>
+      <text x="97" y="34" fill="#38bdf8" font-size="13" font-weight="bold" font-family="monospace">46%</text>
+
+      <!-- Wind -->
+      <rect x="174" y="0" width="80" height="48" rx="10" fill="#000000" fill-opacity="0.3" stroke="#ffffff" stroke-opacity="0.06"/>
+      <text x="184" y="16" fill="#94a3b8" font-size="8" class="font-sans">Wind</text>
+      <text x="184" y="34" fill="#38bdf8" font-size="13" font-weight="bold" font-family="monospace">6.2 km/h</text>
+    </g>
+
+    <!-- Health Advice Box -->
+    <g transform="translate(18, 318)">
+      <rect x="0" y="0" width="254" height="84" rx="14" fill="#18181b" stroke="#ffffff" stroke-opacity="0.1" stroke-width="1"/>
+      <text x="14" y="22" fill="#f87171" font-size="10" font-weight="bold" class="font-sans">Health Advisory Notice</text>
+      <text x="14" y="42" fill="#cbd5e1" font-size="9" class="font-sans">Sensitive groups must avoid outdoor</text>
+      <text x="14" y="56" fill="#cbd5e1" font-size="9" class="font-sans">activity. Active alveolar strain modeled.</text>
+      <text x="14" y="72" fill="#38bdf8" font-size="8" font-family="monospace">Open AeroHealth Impact Dashboard →</text>
+    </g>
+  </g>
+
+  <!-- QUICK FLOATING TOGGLE BUTTONS (Top Left Below Header) -->
+  <g transform="translate(24, 510)">
+    <rect x="0" y="0" width="112" height="34" rx="10" fill="#0f172a" fill-opacity="0.85" stroke="#10b981" stroke-width="1"/>
+    <text x="12" y="21" fill="#34d399" font-size="10" font-weight="bold" class="font-sans">● Air Quality</text>
+
+    <rect x="120" y="0" width="102" height="34" rx="10" fill="#0f172a" fill-opacity="0.85" stroke="#ffffff" stroke-opacity="0.1" stroke-width="1"/>
+    <text x="132" y="21" fill="#94a3b8" font-size="10" class="font-sans">Map Layers</text>
+
+    <rect x="230" y="0" width="102" height="34" rx="10" fill="#0f172a" fill-opacity="0.85" stroke="#ffffff" stroke-opacity="0.1" stroke-width="1"/>
+    <text x="242" y="21" fill="#94a3b8" font-size="10" class="font-sans">Simulator</text>
+  </g>
+
+  <!-- FOOTER STATUS STRIP -->
+  <g transform="translate(0, 645)">
+    <rect x="0" y="0" width="1200" height="30" fill="#060910" stroke="#ffffff" stroke-opacity="0.08" stroke-width="1"/>
+    <text x="24" y="20" fill="#64748b" font-size="9" font-family="monospace">COPERNICUS CAMS SATELLITE TELEMETRY SYNCED • OPEN-METEO GLOBAL SENSOR GRID VERIFIED</text>
+    <text x="1060" y="20" fill="#10b981" font-size="9" font-family="monospace">● 10 LANGUAGES READY</text>
+  </g>
+</svg>

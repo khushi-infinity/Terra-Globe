@@ -1,0 +1,148 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="100%" height="100%">
+  <defs>
+    <radialGradient id="bgGrad2" cx="50%" cy="50%" r="75%">
+      <stop offset="0%" stop-color="#111827"/>
+      <stop offset="60%" stop-color="#090d16"/>
+      <stop offset="100%" stop-color="#030712"/>
+    </radialGradient>
+
+    <linearGradient id="cardGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#161f33" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#0b1120" stop-opacity="0.98"/>
+    </linearGradient>
+
+    <filter id="shadow2" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="16" stdDeviation="20" flood-color="#000000" flood-opacity="0.7"/>
+    </filter>
+  </defs>
+
+  <style>
+    .font-sans { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    .font-mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+  </style>
+
+  <!-- Dark Background -->
+  <rect width="1200" height="675" fill="url(#bgGrad2)"/>
+
+  <!-- Dim Background Map Texture -->
+  <g opacity="0.15">
+    <circle cx="950" cy="340" r="280" fill="none" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="6 6"/>
+    <ellipse cx="950" cy="340" rx="280" ry="110" fill="none" stroke="#38bdf8" stroke-width="1"/>
+    <ellipse cx="950" cy="340" rx="120" ry="280" fill="none" stroke="#38bdf8" stroke-width="1"/>
+  </g>
+
+  <!-- MAIN AEROHEALTH DASHBOARD PANEL (Centered Modal Layout) -->
+  <g transform="translate(140, 40)" filter="url(#shadow2)">
+    <rect x="0" y="0" width="920" height="595" rx="24" fill="url(#cardGrad2)" stroke="#f43f5e" stroke-opacity="0.3" stroke-width="1"/>
+
+    <!-- Header -->
+    <g transform="translate(32, 28)">
+      <rect x="0" y="0" width="38" height="38" rx="10" fill="#881337" fill-opacity="0.5" stroke="#f43f5e" stroke-width="1"/>
+      <path d="M12,19 L16,19 L19,13 L23,26 L26,17 L28,19 L32,19" fill="none" stroke="#f43f5e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="50" y="16" fill="#f43f5e" font-size="9" font-family="monospace" letter-spacing="1">AEROHEALTH™ CLINICAL EPIDEMIOLOGY</text>
+      <text x="50" y="32" fill="#ffffff" font-size="18" font-weight="800" class="font-sans">Biological Aging &amp; Disease Risk Analysis</text>
+      <text x="640" y="24" fill="#94a3b8" font-size="11" font-family="monospace">Target: New Delhi (AQI: 178)</text>
+    </g>
+
+    <!-- Horizontal Divider -->
+    <line x1="32" y1="84" x2="888" y2="84" stroke="#ffffff" stroke-opacity="0.08" stroke-width="1"/>
+
+    <!-- Top Key Metrics Cards: Chronological vs Biological vs Depletion -->
+    <g transform="translate(32, 102)">
+      <!-- Card 1: Chronological Age -->
+      <rect x="0" y="0" width="200" height="88" rx="16" fill="#030712" fill-opacity="0.6" stroke="#ffffff" stroke-opacity="0.1" stroke-width="1"/>
+      <text x="18" y="26" fill="#94a3b8" font-size="10" font-family="monospace">ACTUAL AGE</text>
+      <text x="18" y="62" fill="#ffffff" font-size="30" font-weight="900" font-family="monospace">28.0 <tspan font-size="13" font-weight="normal" fill="#94a3b8">yrs</tspan></text>
+
+      <!-- Card 2: Biological Age (Severe) -->
+      <rect x="216" y="0" width="240" height="88" rx="16" fill="#4c0519" fill-opacity="0.6" stroke="#f43f5e" stroke-opacity="0.5" stroke-width="1.2"/>
+      <text x="234" y="26" fill="#fda4af" font-size="10" font-family="monospace" font-weight="bold">BIOLOGICAL AGE ACCELERATION</text>
+      <text x="234" y="62" fill="#fb7185" font-size="30" font-weight="900" font-family="monospace">33.4 <tspan font-size="13" font-weight="normal" fill="#fda4af">yrs</tspan></text>
+      <rect x="368" y="42" width="76" height="20" rx="10" fill="#f43f5e" fill-opacity="0.3"/>
+      <text x="376" y="56" fill="#fecdd3" font-size="9" font-family="monospace" font-weight="bold">+5.4 yrs</text>
+
+      <!-- Card 3: Monthly Depletion Rate -->
+      <rect x="472" y="0" width="384" height="88" rx="16" fill="#030712" fill-opacity="0.6" stroke="#f59e0b" stroke-opacity="0.3" stroke-width="1"/>
+      <text x="490" y="26" fill="#fcd34d" font-size="10" font-family="monospace">LIFE EXPECTANCY DEPLETION (GEMM MODEL)</text>
+      <text x="490" y="58" fill="#f59e0b" font-size="22" font-weight="bold" font-family="monospace">-24.2 hrs / month</text>
+      <text x="490" y="74" fill="#94a3b8" font-size="10" class="font-sans">Annual Longevity Loss: <tspan fill="#fcd34d" font-weight="bold">-12.1 days / year</tspan></text>
+    </g>
+
+    <!-- Sub-tabs: Organ Systems | Risk Factors | Clinical Protocols -->
+    <g transform="translate(32, 206)">
+      <rect x="0" y="0" width="856" height="36" rx="10" fill="#030712" fill-opacity="0.7" stroke="#ffffff" stroke-opacity="0.1" stroke-width="1"/>
+
+      <!-- Tab 1: Organs -->
+      <text x="80" y="23" fill="#94a3b8" font-size="12" font-weight="600" class="font-sans">Organ Systems</text>
+
+      <!-- Tab 2: Risk Factors (Active Selected) -->
+      <rect x="286" y="3" width="284" height="30" rx="8" fill="#881337" fill-opacity="0.6" stroke="#f43f5e" stroke-width="1"/>
+      <text x="360" y="22" fill="#ffe4e6" font-size="12" font-weight="bold" class="font-sans">🛡️ Risk Factors &amp; Disease Hazards</text>
+
+      <!-- Tab 3: Protocols -->
+      <text x="680" y="23" fill="#94a3b8" font-size="12" font-weight="600" class="font-sans">Clinical Protocols</text>
+    </g>
+
+    <!-- Tab Content: Disease Hazard & Risk Factor Cards -->
+    <g transform="translate(32, 256)">
+      <!-- Disease Card 1: COPD -->
+      <g transform="translate(0, 0)">
+        <rect x="0" y="0" width="418" height="136" rx="14" fill="#030712" fill-opacity="0.65" stroke="#f43f5e" stroke-opacity="0.4" stroke-width="1"/>
+        <text x="16" y="24" fill="#ffffff" font-size="13" font-weight="bold" class="font-sans">Chronic Obstructive Pulmonary Disease</text>
+        <rect x="326" y="10" width="78" height="18" rx="9" fill="#ef4444" fill-opacity="0.25" stroke="#ef4444" stroke-width="0.8"/>
+        <text x="334" y="22" fill="#fca5a5" font-size="8" font-weight="bold" font-family="monospace">CRITICAL HAZARD</text>
+
+        <rect x="16" y="38" width="138" height="22" rx="6" fill="#4c0519" stroke="#f43f5e" stroke-width="0.8"/>
+        <text x="24" y="53" fill="#fda4af" font-size="11" font-weight="bold" font-family="monospace">+180% Excess Hazard</text>
+        <text x="166" y="53" fill="#94a3b8" font-size="11" font-family="monospace">Hazard Ratio: <tspan fill="#f59e0b" font-weight="bold">2.1x baseline</tspan></text>
+
+        <!-- Risk Progress Bar -->
+        <rect x="16" y="68" width="386" height="6" rx="3" fill="#1e293b"/>
+        <rect x="16" y="68" width="310" height="6" rx="3" fill="#ef4444"/>
+
+        <!-- Human Readable Description -->
+        <text x="16" y="92" fill="#cbd5e1" font-size="10" class="font-sans">Progressive airflow limitation and chronic alveolar airspace</text>
+        <text x="16" y="106" fill="#cbd5e1" font-size="10" class="font-sans">enlargement from inhaled micro-soot particle deposition.</text>
+      </g>
+
+      <!-- Disease Card 2: Ischemic Cardiovascular Disease -->
+      <g transform="translate(438, 0)">
+        <rect x="0" y="0" width="418" height="136" rx="14" fill="#030712" fill-opacity="0.65" stroke="#f59e0b" stroke-opacity="0.4" stroke-width="1"/>
+        <text x="16" y="24" fill="#ffffff" font-size="13" font-weight="bold" class="font-sans">Ischemic Cardiovascular Disease &amp; Stroke</text>
+        <rect x="336" y="10" width="68" height="18" rx="9" fill="#f59e0b" fill-opacity="0.25" stroke="#f59e0b" stroke-width="0.8"/>
+        <text x="344" y="22" fill="#fde68a" font-size="8" font-weight="bold" font-family="monospace">ELEVATED RISK</text>
+
+        <rect x="16" y="38" width="132" height="22" rx="6" fill="#451a03" stroke="#f59e0b" stroke-width="0.8"/>
+        <text x="24" y="53" fill="#fed7aa" font-size="11" font-weight="bold" font-family="monospace">+140% Arterial Risk</text>
+        <text x="160" y="53" fill="#94a3b8" font-size="11" font-family="monospace">Hazard Ratio: <tspan fill="#f59e0b" font-weight="bold">1.8x baseline</tspan></text>
+
+        <!-- Risk Progress Bar -->
+        <rect x="16" y="68" width="386" height="6" rx="3" fill="#1e293b"/>
+        <rect x="16" y="68" width="260" height="6" rx="3" fill="#f59e0b"/>
+
+        <!-- Human Readable Description -->
+        <text x="16" y="92" fill="#cbd5e1" font-size="10" class="font-sans">Ultrafine PM2.5 crosses alveolar membranes, inducing systemic</text>
+        <text x="16" y="106" fill="#cbd5e1" font-size="10" class="font-sans">coronary endothelial stiffness and plaque destabilization.</text>
+      </g>
+    </g>
+
+    <!-- Toxicological Analysis Callout (Human Readable Box) -->
+    <g transform="translate(32, 408)">
+      <rect x="0" y="0" width="856" height="114" rx="14" fill="#0c162c" stroke="#38bdf8" stroke-opacity="0.4" stroke-width="1"/>
+      <text x="20" y="24" fill="#38bdf8" font-size="10" font-family="monospace" font-weight="bold">✨ TOXICOLOGICAL ANALYSIS &amp; PATHOLOGICAL MECHANISM</text>
+      <text x="20" y="46" fill="#e2e8f0" font-size="11" class="font-sans">Ambient particulate inhalation at <tspan fill="#f59e0b" font-weight="bold">88.4 µg/m³</tspan> triggers continuous alveolar macrophage oxidative stress</text>
+      <text x="20" y="64" fill="#e2e8f0" font-size="11" class="font-sans">and interleukin-6 systemic circulation cascade. Ultrafine carbon translocates across the blood-brain</text>
+      <text x="20" y="82" fill="#e2e8f0" font-size="11" class="font-sans">barrier, resulting in an estimated <tspan fill="#f43f5e" font-weight="bold">+5.4 years</tspan> of accelerated biological wear.</text>
+      <text x="20" y="102" fill="#94a3b8" font-size="9" font-family="monospace">Epidemiological Confidence: High (95% CI: 4.8 - 6.1 yrs)</text>
+    </g>
+
+    <!-- Bottom Actions -->
+    <g transform="translate(32, 536)">
+      <rect x="0" y="0" width="418" height="38" rx="10" fill="#f59e0b"/>
+      <text x="120" y="24" fill="#020617" font-size="12" font-weight="bold" class="font-sans">🚨 Report Pollution Hazard at this Coordinate</text>
+
+      <rect x="438" y="0" width="418" height="38" rx="10" fill="#1e293b" stroke="#ffffff" stroke-opacity="0.15" stroke-width="1"/>
+      <text x="560" y="24" fill="#ffffff" font-size="12" font-weight="600" class="font-sans">📄 Export Clinical Health Certificate (PDF)</text>
+    </g>
+  </g>
+</svg>

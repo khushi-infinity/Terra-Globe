@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useAppStore } from '../../store/useAppStore';
+import { useTranslation } from '../../i18n/useTranslation';
+import { HumanReadableText } from '../common/HumanReadableText';
 import {
   Activity,
   Heart,
@@ -20,6 +22,7 @@ import {
 } from 'lucide-react';
 
 export const BiologicalAgePanel: React.FC = () => {
+  const { t } = useTranslation();
   const isBioAgePanelOpen = useAppStore(s => s.isBioAgePanelOpen);
   const setBioAgePanelOpen = useAppStore(s => s.setBioAgePanelOpen);
   const selectedBioAgeData = useAppStore(s => s.selectedBioAgeData);
@@ -76,7 +79,7 @@ Diagnosis: ${data.scientificExplanation}
           <div>
             <div className="flex items-center gap-2">
               <span className="font-tech text-sm font-bold tracking-wider text-white uppercase">
-                AeroHealth™ Biological Impact Report
+                {t('bioage.title', 'Biological Aging & Disease Risk')}
               </span>
               <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-rose-500/20 text-rose-300 border border-rose-500/30">
                 EPIDEMIOLOGY
@@ -93,7 +96,7 @@ Diagnosis: ${data.scientificExplanation}
         <button
           onClick={() => setBioAgePanelOpen(false)}
           className="p-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
-          title="Close Panel"
+          title={t('bioage.close', 'Close Panel')}
         >
           <X className="w-4 h-4" />
         </button>
@@ -130,14 +133,18 @@ Diagnosis: ${data.scientificExplanation}
 
               <div className="grid grid-cols-3 gap-2 text-center py-2">
                 <div className="p-2.5 rounded-2xl bg-black/40 border border-white/5">
-                  <span className="text-[10px] font-mono text-slate-400 uppercase block">Actual Age</span>
+                  <span className="text-[10px] font-mono text-slate-400 uppercase block">
+                    {t('bioage.chronological_age', 'Actual Age')}
+                  </span>
                   <div className="text-xl font-bold font-tech text-white mt-0.5">
                     {data.actualAge} <span className="text-xs font-normal text-slate-400">yrs</span>
                   </div>
                 </div>
 
                 <div className="p-2.5 rounded-2xl bg-rose-950/60 border border-rose-500/40 shadow-inner">
-                  <span className="text-[10px] font-mono text-rose-300 uppercase block font-semibold">Bio Age</span>
+                  <span className="text-[10px] font-mono text-rose-300 uppercase block font-semibold">
+                    {t('bioage.biological_age', 'Bio Age')}
+                  </span>
                   <div className="text-2xl font-bold font-tech text-rose-400 mt-0.5">
                     {data.biologicalAge} <span className="text-xs font-normal text-rose-300">yrs</span>
                   </div>
@@ -216,7 +223,7 @@ Diagnosis: ${data.scientificExplanation}
               </div>
             </div>
 
-            {/* Sub-tabs: Organ Breakdown | Disease Risks | Clinical Prevention */}
+            {/* Sub-tabs: Organ Breakdown | Risk Factors | Clinical Prevention */}
             <div className="flex items-center rounded-xl bg-black/50 p-1 border border-white/10 text-xs">
               <button
                 onClick={() => setActiveTab('organs')}
@@ -230,13 +237,14 @@ Diagnosis: ${data.scientificExplanation}
               </button>
               <button
                 onClick={() => setActiveTab('diseases')}
-                className={`flex-1 py-1.5 rounded-lg font-medium transition-all ${
+                className={`flex-1 py-1.5 rounded-lg font-medium transition-all flex items-center justify-center gap-1.5 ${
                   activeTab === 'diseases'
                     ? 'bg-rose-500/25 text-rose-300 border border-rose-500/30 shadow'
                     : 'text-slate-400 hover:text-white'
                 }`}
               >
-                Disease Hazards
+                <ShieldAlert className="w-3.5 h-3.5" />
+                <span>Risk Factors</span>
               </button>
               <button
                 onClick={() => setActiveTab('prevention')}
@@ -396,27 +404,58 @@ Diagnosis: ${data.scientificExplanation}
               </div>
             )}
 
-            {/* TAB CONTENT: DISEASE HAZARDS */}
+            {/* TAB CONTENT: DISEASE HAZARDS & RISK FACTORS */}
             {activeTab === 'diseases' && (
-              <div className="space-y-2.5">
+              <div className="space-y-3">
+                <div className="text-[11px] text-slate-400 px-1">
+                  Epidemiological excess hazard ratios based on WHO guidelines and Lancet Commission morbidity coefficients:
+                </div>
                 {data.diseaseRisks.map((d, i) => (
-                  <div key={i} className="p-3 rounded-2xl bg-black/40 border border-white/10 space-y-1">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-white font-tech">{d.disease}</span>
-                      <span className={`text-[10px] font-mono px-1.5 py-0.2 rounded ${
+                  <div key={i} className="p-3.5 rounded-2xl bg-black/50 border border-white/10 space-y-2 hover:border-rose-500/30 transition-all">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex items-center gap-2">
+                        <div className={`p-1 rounded-lg ${
+                          d.severity === 'critical' ? 'bg-rose-500/20 text-rose-400' : 'bg-amber-500/20 text-amber-400'
+                        }`}>
+                          <ShieldAlert className="w-3.5 h-3.5" />
+                        </div>
+                        <span className="text-xs font-bold text-white font-tech">{d.disease}</span>
+                      </div>
+                      <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-full flex-shrink-0 ${
                         d.severity === 'critical'
-                          ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
-                          : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                          ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40'
+                          : 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
                       }`}>
-                        HR: {d.hazardRatio}x
+                        {d.severity === 'critical' ? 'Critical Hazard' : 'Elevated Risk'}
                       </span>
                     </div>
-                    <div className="text-[11px] font-mono text-rose-400 font-semibold">
-                      {d.riskFactor}
+
+                    <div className="flex items-center justify-between text-xs pt-1">
+                      <div className="font-mono text-rose-400 font-bold flex items-center gap-1.5">
+                        <span className="px-2 py-0.5 rounded bg-rose-950/60 border border-rose-500/30">
+                          {d.riskFactor}
+                        </span>
+                      </div>
+                      <div className="text-[11px] font-mono text-slate-300">
+                        Hazard Ratio: <span className="font-bold text-amber-300">{d.hazardRatio}x baseline</span>
+                      </div>
                     </div>
-                    <p className="text-[11px] text-slate-400">
-                      {d.description}
-                    </p>
+
+                    {/* Visual Risk Gauge */}
+                    <div className="w-full h-1.5 bg-slate-900 rounded-full overflow-hidden">
+                      <div
+                        className={`h-full rounded-full ${
+                          d.severity === 'critical'
+                            ? 'bg-gradient-to-r from-amber-500 to-rose-500'
+                            : 'bg-gradient-to-r from-emerald-500 to-amber-500'
+                        }`}
+                        style={{ width: `${Math.min(100, Math.max(25, (d.hazardRatio - 1) * 50))}%` }}
+                      />
+                    </div>
+
+                    <div className="pt-1">
+                      <HumanReadableText content={d.description} variant="clinical" />
+                    </div>
                   </div>
                 ))}
               </div>
@@ -446,12 +485,12 @@ Diagnosis: ${data.scientificExplanation}
               <div className="flex items-center gap-2">
                 <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
                 <span className="text-xs font-mono font-bold text-indigo-300 uppercase tracking-wider">
-                  Toxicological Analysis
+                  Toxicological Analysis & Pathological Mechanism
                 </span>
               </div>
-              <p className="text-xs text-slate-300 leading-relaxed italic">
-                "{data.scientificExplanation}"
-              </p>
+              <div className="text-xs text-slate-200 leading-relaxed">
+                <HumanReadableText content={data.scientificExplanation} variant="clinical" />
+              </div>
             </div>
 
             {/* Action Bar */}

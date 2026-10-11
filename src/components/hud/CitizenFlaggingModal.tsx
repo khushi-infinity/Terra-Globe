@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAppStore } from '../../store/useAppStore';
+import { useTranslation } from '../../i18n/useTranslation';
 import { TerraPollutionType } from '../../types';
 import {
   AlertTriangle,
@@ -32,6 +33,7 @@ const POLLUTION_CATEGORIES: Array<{
 ];
 
 export const CitizenFlaggingModal: React.FC = () => {
+  const { t } = useTranslation();
   const isCitizenFlaggingOpen = useAppStore(s => s.isCitizenFlaggingOpen);
   const setCitizenFlaggingOpen = useAppStore(s => s.setCitizenFlaggingOpen);
   const flaggingDefaultCoords = useAppStore(s => s.flaggingDefaultCoords);
@@ -195,10 +197,10 @@ export const CitizenFlaggingModal: React.FC = () => {
             </div>
             <div>
               <h3 className="text-sm font-bold text-white tracking-wide uppercase font-tech">
-                Report Pollution Hazard
+                {t('flagging.title', 'Report Pollution Hazard')}
               </h3>
               <span className="text-xs text-slate-400 block">
-                Flag an active environmental source with GPS coordinates and photo evidence
+                {t('flagging.subtitle', 'Flag an active environmental source with GPS coordinates and photo evidence')}
               </span>
             </div>
           </div>
@@ -396,7 +398,7 @@ export const CitizenFlaggingModal: React.FC = () => {
                 onClick={() => setCitizenFlaggingOpen(false)}
                 className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white"
               >
-                Cancel
+                {t('flagging.cancel', 'Cancel')}
               </button>
 
               <button
@@ -407,12 +409,12 @@ export const CitizenFlaggingModal: React.FC = () => {
                 {isSubmitting ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin" />
-                    <span>Transmitting Report...</span>
+                    <span>{t('flagging.submitting', 'Transmitting Report...')}</span>
                   </>
                 ) : (
                   <>
                     <AlertTriangle className="w-4 h-4" />
-                    <span>Submit Verified Report</span>
+                    <span>{t('flagging.submit', 'Submit Verified Report')}</span>
                   </>
                 )}
               </button>

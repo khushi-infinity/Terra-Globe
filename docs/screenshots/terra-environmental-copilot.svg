@@ -1,0 +1,140 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="100%" height="100%">
+  <defs>
+    <radialGradient id="bgGrad3" cx="50%" cy="50%" r="75%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="60%" stop-color="#080d1a"/>
+      <stop offset="100%" stop-color="#020409"/>
+    </radialGradient>
+
+    <linearGradient id="copilotCard" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#141c30" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#090e1b" stop-opacity="0.98"/>
+    </linearGradient>
+
+    <filter id="shadow3" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="16" stdDeviation="24" flood-color="#000000" flood-opacity="0.8"/>
+    </filter>
+  </defs>
+
+  <style>
+    .font-sans { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    .font-mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+  </style>
+
+  <!-- Deep Backdrop -->
+  <rect width="1200" height="675" fill="url(#bgGrad3)"/>
+
+  <!-- Centered Copilot Modal Window -->
+  <g transform="translate(210, 36)" filter="url(#shadow3)">
+    <rect x="0" y="0" width="780" height="600" rx="24" fill="url(#copilotCard)" stroke="#6366f1" stroke-opacity="0.4" stroke-width="1.2"/>
+
+    <!-- Modal Header -->
+    <g transform="translate(28, 20)">
+      <rect x="0" y="0" width="36" height="36" rx="10" fill="#312e81" fill-opacity="0.6" stroke="#818cf8" stroke-width="1"/>
+      <circle cx="18" cy="18" r="7" fill="none" stroke="#a5b4fc" stroke-width="2"/>
+      <circle cx="18" cy="18" r="2.5" fill="#a5b4fc"/>
+
+      <text x="48" y="16" fill="#ffffff" font-size="15" font-weight="bold" class="font-sans">TERRA Environmental Copilot</text>
+      <rect x="256" y="5" width="120" height="18" rx="9" fill="#10b981" fill-opacity="0.2" stroke="#10b981" stroke-width="0.8"/>
+      <circle cx="266" cy="14" r="3" fill="#34d399"/>
+      <text x="274" y="17" fill="#6ee7b7" font-size="9" font-family="monospace">New Delhi Active</text>
+
+      <text x="48" y="32" fill="#94a3b8" font-size="10" class="font-sans">Multi-turn scientific reasoning, microclimate diagnostics &amp; WHAT-IF modeling</text>
+
+      <!-- Close icon -->
+      <text x="700" y="24" fill="#94a3b8" font-size="16">✕</text>
+    </g>
+
+    <!-- Gemini Model Switcher Strip -->
+    <g transform="translate(0, 70)">
+      <rect x="0" y="0" width="780" height="34" fill="#030712" fill-opacity="0.6" stroke="#ffffff" stroke-opacity="0.08" stroke-width="1"/>
+      <text x="28" y="21" fill="#94a3b8" font-size="10" font-family="monospace">Gemini Reasoning Engine:</text>
+
+      <!-- Active: Pro 3.1 -->
+      <rect x="180" y="5" width="168" height="24" rx="6" fill="#4f46e5" stroke="#818cf8" stroke-width="1"/>
+      <text x="192" y="21" fill="#ffffff" font-size="10" font-weight="bold" class="font-sans">⚡ Pro (Complex Tasks)</text>
+
+      <!-- Flash 3.5 -->
+      <rect x="356" y="5" width="160" height="24" rx="6" fill="#1e293b" fill-opacity="0.6"/>
+      <text x="368" y="21" fill="#94a3b8" font-size="10" class="font-sans">✨ Flash (General Tasks)</text>
+
+      <!-- Flash Lite -->
+      <rect x="524" y="5" width="140" height="24" rx="6" fill="#1e293b" fill-opacity="0.6"/>
+      <text x="536" y="21" fill="#94a3b8" font-size="10" class="font-sans">⚡ Flash Lite (Fast)</text>
+    </g>
+
+    <!-- Chat Messages View -->
+    <g transform="translate(28, 120)">
+      <!-- User Message -->
+      <g transform="translate(180, 0)">
+        <rect x="0" y="0" width="540" height="38" rx="14" fill="#4f46e5"/>
+        <text x="18" y="24" fill="#ffffff" font-size="11" font-weight="500" class="font-sans">What are the primary air pollution causes in New Delhi right now and what can be done?</text>
+      </g>
+
+      <!-- AI Copilot Response (Ultra Clean Human-Readable Format) -->
+      <g transform="translate(0, 52)">
+        <circle cx="16" cy="18" r="14" fill="#312e81" stroke="#818cf8" stroke-width="1"/>
+        <text x="11" y="22" fill="#c7d2fe" font-size="12">🤖</text>
+
+        <rect x="42" y="0" width="680" height="330" rx="16" fill="#030712" fill-opacity="0.75" stroke="#ffffff" stroke-opacity="0.1" stroke-width="1"/>
+
+        <!-- Section 1: Header -->
+        <g transform="translate(62, 24)">
+          <circle cx="4" cy="4" r="3" fill="#10b981"/>
+          <text x="14" y="8" fill="#34d399" font-size="12" font-weight="bold" class="font-sans">Atmospheric Sensor Diagnostics (New Delhi Twin)</text>
+
+          <text x="0" y="30" fill="#cbd5e1" font-size="11" class="font-sans">Telemetry indicates peak PM2.5 levels at <tspan fill="#f59e0b" font-weight="bold">88.4 µg/m³</tspan> (17.6x WHO guideline). Contributing factors:</text>
+          <text x="12" y="50" fill="#e2e8f0" font-size="11" class="font-sans">• <tspan fill="#ffffff" font-weight="bold">Thermal Inversion Layer:</tspan> Cold morning air trapped under warm layer suppresses dispersion.</text>
+          <text x="12" y="68" fill="#e2e8f0" font-size="11" class="font-sans">• <tspan fill="#ffffff" font-weight="bold">Regional Combustion Plumes:</tspan> Upwind agrarian stubble smoke and heavy diesel transport corridors.</text>
+        </g>
+
+        <!-- Section 2: Intervention Analysis -->
+        <g transform="translate(62, 116)">
+          <circle cx="4" cy="4" r="3" fill="#38bdf8"/>
+          <text x="14" y="8" fill="#38bdf8" font-size="12" font-weight="bold" class="font-sans">Intervention &amp; Mitigation Analysis</text>
+
+          <text x="0" y="30" fill="#cbd5e1" font-size="11" class="font-sans">Simulating interventions via the TERRA WHAT-IF engine projects the following outcomes:</text>
+          <text x="12" y="50" fill="#e2e8f0" font-size="11" class="font-sans">• <tspan fill="#ffffff" font-weight="bold">Canopy Expansion (+40%):</tspan> Attenuates urban heat island by <tspan fill="#34d399" font-weight="bold">1.6°C</tspan> and traps particulate drift.</text>
+          <text x="12" y="68" fill="#e2e8f0" font-size="11" class="font-sans">• <tspan fill="#ffffff" font-weight="bold">Electric Fleet Transition (+50%):</tspan> Eliminates roadside NO2 hotspots by <tspan fill="#34d399" font-weight="bold">32%</tspan>.</text>
+        </g>
+
+        <!-- Section 3: Recommended Actions -->
+        <g transform="translate(62, 206)">
+          <circle cx="4" cy="4" r="3" fill="#f59e0b"/>
+          <text x="14" y="8" fill="#fcd34d" font-size="12" font-weight="bold" class="font-sans">Immediate Public Health Recommendations</text>
+          <text x="12" y="30" fill="#e2e8f0" font-size="11" class="font-sans">• Run certified <tspan fill="#ffffff" font-weight="bold">True HEPA (H13)</tspan> continuous filtration in indoor living areas.</text>
+          <text x="12" y="48" fill="#e2e8f0" font-size="11" class="font-sans">• Wear tight-fitting <tspan fill="#ffffff" font-weight="bold">N95 respirators</tspan> during rush hour transit.</text>
+          <text x="12" y="66" fill="#e2e8f0" font-size="11" class="font-sans">• Report local burning incidents using the <tspan fill="#f59e0b" font-weight="bold">Report Hazard</tspan> button to alert authorities.</text>
+        </g>
+
+        <!-- Copy response button -->
+        <g transform="translate(670, 16)">
+          <rect x="0" y="0" width="38" height="24" rx="6" fill="#1e293b" fill-opacity="0.8"/>
+          <text x="8" y="16" fill="#cbd5e1" font-size="10">📋</text>
+        </g>
+      </g>
+    </g>
+
+    <!-- Quick Suggestions Bar -->
+    <g transform="translate(28, 498)">
+      <text x="0" y="16" fill="#64748b" font-size="9" font-family="monospace">SUGGESTIONS:</text>
+      <rect x="80" y="2" width="164" height="22" rx="11" fill="#1e293b" stroke="#ffffff" stroke-opacity="0.1"/>
+      <text x="92" y="16" fill="#cbd5e1" font-size="10" class="font-sans">📊 What is current AQI trend?</text>
+
+      <rect x="252" y="2" width="180" height="22" rx="11" fill="#1e293b" stroke="#ffffff" stroke-opacity="0.1"/>
+      <text x="264" y="16" fill="#cbd5e1" font-size="10" class="font-sans">🌳 Simulate tree canopy growth</text>
+
+      <rect x="440" y="2" width="160" height="22" rx="11" fill="#1e293b" stroke="#ffffff" stroke-opacity="0.1"/>
+      <text x="452" y="16" fill="#cbd5e1" font-size="10" class="font-sans">🧬 Analyze biological age</text>
+    </g>
+
+    <!-- Bottom Input Field -->
+    <g transform="translate(28, 536)">
+      <rect x="0" y="0" width="630" height="42" rx="12" fill="#030712" stroke="#6366f1" stroke-opacity="0.5" stroke-width="1.2"/>
+      <text x="20" y="26" fill="#94a3b8" font-size="11" class="font-sans">Ask TERRA Copilot about air quality, microclimate, or policy simulations...</text>
+
+      <rect x="640" y="0" width="84" height="42" rx="12" fill="#4f46e5"/>
+      <text x="654" y="26" fill="#ffffff" font-size="12" font-weight="bold" class="font-sans">Ask Copilot</text>
+    </g>
+  </g>
+</svg>

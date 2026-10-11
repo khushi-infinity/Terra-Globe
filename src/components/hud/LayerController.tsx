@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useAppStore } from '../../store/useAppStore';
+import { useTranslation } from '../../i18n/useTranslation';
 import { LayerId } from '../../types';
 import { LAYER_REGISTRY } from '../../types/layerRegistry';
 import {
@@ -22,6 +23,7 @@ import {
 } from 'lucide-react';
 
 export const LayerController: React.FC = () => {
+  const { t } = useTranslation();
   const layers = useAppStore(s => s.layers);
   const primaryLayer = useAppStore(s => s.primaryLayer);
   const isCompareMode = useAppStore(s => s.isCompareMode);
@@ -177,7 +179,7 @@ export const LayerController: React.FC = () => {
           <div className="flex items-center justify-between pb-1.5 border-b border-white/10 mb-2">
             <span className="text-xs font-bold text-white flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full" style={{ backgroundColor: activeLayer.color }} />
-              {activeLayer.name}
+              {t(`layers.${activeLayer.id}`, activeLayer.name)}
             </span>
             <button
               onClick={() => setActiveLayerId(null)}
@@ -187,11 +189,13 @@ export const LayerController: React.FC = () => {
             </button>
           </div>
 
-          <div className="text-[10px] text-slate-300 mb-2">{activeLayer.shortDesc}</div>
+          <div className="text-[10px] text-slate-300 mb-2">
+            {t(`layers.${activeLayer.id}_desc`, activeLayer.shortDesc)}
+          </div>
 
           {activeLayer.isActive && (
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-[10px] text-slate-400">Opacity:</span>
+              <span className="text-[10px] text-slate-400">{t('layers.opacity', 'Opacity')}:</span>
               <input
                 type="range"
                 min="0.2"
@@ -218,7 +222,7 @@ export const LayerController: React.FC = () => {
         <div className="px-2 py-1 flex items-center justify-between border-b border-white/10 mb-1">
           <div className="flex items-center gap-1.5 text-slate-300 text-xs font-semibold">
             <Layers className="w-3.5 h-3.5 text-emerald-400" />
-            <span className="tracking-wide text-xs">Map Layers</span>
+            <span className="tracking-wide text-xs">{t('layers.title', 'Map Layers')}</span>
           </div>
 
           <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-medium font-mono">
@@ -246,7 +250,7 @@ export const LayerController: React.FC = () => {
                   {getLayerIcon(layer.id)}
                 </span>
                 <span className="text-xs font-medium tracking-tight truncate">
-                  {layer.name.split(' (')[0]}
+                  {t(`layers.${layer.id}`, layer.name.split(' (')[0])}
                 </span>
               </div>
 

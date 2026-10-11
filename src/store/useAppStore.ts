@@ -27,6 +27,23 @@ import {
 } from '../services/environmentalDataService';
 import { RealAirQuality } from '../services/airQualityService';
 import { RealWeather } from '../services/weatherService';
+import { SupportedLanguage } from '../i18n/translations';
+
+const getInitialLanguage = (): SupportedLanguage => {
+  try {
+    const saved = localStorage.getItem('terra_language') as SupportedLanguage;
+    if (saved && ['en', 'hi', 'es', 'fr', 'de', 'zh', 'ja', 'ar', 'bn', 'pt'].includes(saved)) {
+      if (typeof document !== 'undefined') {
+        document.documentElement.lang = saved;
+        if (saved === 'ar') document.documentElement.dir = 'rtl';
+      }
+      return saved;
+    }
+  } catch (e) {
+    // fallback
+  }
+  return 'en';
+};
 
 export const INITIAL_LAYERS: EnvironmentalLayer[] = [
   { id: 'aqi', name: 'Air Quality (AQI)', shortDesc: 'Real Open-Meteo / CAMS PM2.5 & Ozone', isActive: true, opacity: 0.85, color: '#f59e0b', unit: 'AQI' },
@@ -76,6 +93,10 @@ const DEFAULT_COGNITO_USER: CognitoUserSession = {
 };
 
 interface AppState {
+  // Language & Internationalization
+  language: SupportedLanguage;
+  setLanguage: (lang: SupportedLanguage) => void;
+
   // Navigation & Location
   currentLocation: Location;
   cameraMode: CameraMode;
@@ -210,6 +231,24 @@ interface AppState {
 }
 
 export const useAppStore = create<AppState>((set, get) => ({
+  language: getInitialLanguage(),
+  setLanguage: (lang: SupportedLanguage) => {
+    try {
+      localStorage.setItem('terra_language', lang);
+      if (typeof document !== 'undefined') {
+        document.documentElement.lang = lang;
+        if (lang === 'ar') {
+          document.documentElement.dir = 'rtl';
+        } else {
+          document.documentElement.dir = 'ltr';
+        }
+      }
+    } catch (e) {
+      // ignore
+    }
+    set({ language: lang });
+  },
+
   currentLocation: SUPPORTED_LOCATIONS[0],
   cameraMode: 'global',
   isFlying: false,

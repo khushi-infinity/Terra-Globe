@@ -17,6 +17,7 @@ import { CitizenFlaggingModal } from './components/hud/CitizenFlaggingModal';
 import { CommunitySocialFeed } from './components/community/CommunitySocialFeed';
 import { CognitoAuthModal } from './components/auth/CognitoAuthModal';
 import { useAppStore } from './store/useAppStore';
+import { useTranslation } from './i18n/useTranslation';
 import {
   Layers,
   Sliders,
@@ -24,6 +25,7 @@ import {
 } from 'lucide-react';
 
 export default function App() {
+  const { t } = useTranslation();
   const isDemoActive = useAppStore(s => s.isDemoActive);
   const mainView = useAppStore(s => s.mainView);
 
@@ -50,10 +52,10 @@ export default function App() {
                 ? 'border-emerald-500/40 bg-[#090d16]/95 text-white shadow-emerald-950/20'
                 : 'border-white/10 bg-[#090d16]/80 text-slate-400 hover:text-white'
             }`}
-            title="Toggle Air Quality Information Card"
+            title={t('toggles.hint_air_quality', 'Toggle Air Quality Information Card')}
           >
             <BarChart3 className={`w-3.5 h-3.5 ${showMetrics ? 'text-emerald-400' : 'text-slate-500'}`} />
-            <span>Air Quality</span>
+            <span>{t('toggles.air_quality', 'Air Quality')}</span>
             {/* Tactile Toggle Switch */}
             <span
               className={`relative inline-flex h-4 w-7 flex-shrink-0 cursor-pointer rounded-full border border-white/10 transition-colors duration-200 ease-in-out ${
@@ -76,10 +78,10 @@ export default function App() {
                 ? 'border-emerald-500/40 bg-[#090d16]/95 text-white shadow-emerald-950/20'
                 : 'border-white/10 bg-[#090d16]/80 text-slate-400 hover:text-white'
             }`}
-            title="Toggle Map Data Layers Panel"
+            title={t('toggles.hint_map_layers', 'Toggle Map Data Layers Panel')}
           >
             <Layers className={`w-3.5 h-3.5 ${showLayers ? 'text-emerald-400' : 'text-slate-500'}`} />
-            <span>Map Layers</span>
+            <span>{t('toggles.map_layers', 'Map Layers')}</span>
             {/* Tactile Toggle Switch */}
             <span
               className={`relative inline-flex h-4 w-7 flex-shrink-0 cursor-pointer rounded-full border border-white/10 transition-colors duration-200 ease-in-out ${
@@ -102,10 +104,10 @@ export default function App() {
                 ? 'border-emerald-500/40 bg-[#090d16]/95 text-white shadow-emerald-950/20'
                 : 'border-white/10 bg-[#090d16]/80 text-slate-400 hover:text-white'
             }`}
-            title="Toggle Clean Air Simulator"
+            title={t('toggles.hint_simulator', 'Toggle Clean Air Simulator')}
           >
             <Sliders className={`w-3.5 h-3.5 ${showWhatIf ? 'text-emerald-400' : 'text-slate-500'}`} />
-            <span>Simulator</span>
+            <span>{t('toggles.simulator', 'Simulator')}</span>
             {/* Tactile Toggle Switch */}
             <span
               className={`relative inline-flex h-4 w-7 flex-shrink-0 cursor-pointer rounded-full border border-white/10 transition-colors duration-200 ease-in-out ${

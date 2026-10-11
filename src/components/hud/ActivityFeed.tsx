@@ -1,5 +1,6 @@
 import React from 'react';
 import { useAppStore } from '../../store/useAppStore';
+import { useTranslation } from '../../i18n/useTranslation';
 import {
   Activity,
   Trees,
@@ -13,6 +14,7 @@ import {
 } from 'lucide-react';
 
 export const ActivityFeed: React.FC = () => {
+  const { t } = useTranslation();
   const communityActions = useAppStore(s => s.communityActions);
   const isActivityFeedOpen = useAppStore(s => s.isActivityFeedOpen);
   const setActivityFeedOpen = useAppStore(s => s.setActivityFeedOpen);
@@ -38,7 +40,9 @@ export const ActivityFeed: React.FC = () => {
         >
           <div className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
           <Activity className="w-3.5 h-3.5 text-emerald-400" />
-          <span className="font-semibold text-slate-200">Community Action Stream</span>
+          <span className="font-semibold text-slate-200">
+            {t('activity.open', 'Community Action Stream')}
+          </span>
           <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
             {communityActions.length} Drives
           </span>
@@ -54,7 +58,7 @@ export const ActivityFeed: React.FC = () => {
               <div className="flex items-center gap-2">
                 <Activity className="w-4 h-4 text-emerald-400" />
                 <span className="text-xs font-bold text-white tracking-wide">
-                  Live Ecological Action Stream ({currentLocation.name})
+                  {t('activity.title', 'Live Ecological Action Stream')} ({currentLocation.name})
                 </span>
               </div>
               <button

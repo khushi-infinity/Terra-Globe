@@ -1,0 +1,147 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="100%" height="100%">
+  <defs>
+    <radialGradient id="archBg" cx="50%" cy="50%" r="75%">
+      <stop offset="0%" stop-color="#0b1120"/>
+      <stop offset="60%" stop-color="#060913"/>
+      <stop offset="100%" stop-color="#020409"/>
+    </radialGradient>
+
+    <linearGradient id="boxGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+
+    <linearGradient id="awsGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f97316"/>
+      <stop offset="100%" stop-color="#ea580c"/>
+    </linearGradient>
+
+    <filter id="boxShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000000" flood-opacity="0.6"/>
+    </filter>
+  </defs>
+
+  <style>
+    .font-sans { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    .font-mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+  </style>
+
+  <!-- Background -->
+  <rect width="1200" height="675" fill="url(#archBg)"/>
+
+  <!-- Diagram Title -->
+  <g transform="translate(60, 40)">
+    <text x="0" y="0" fill="#38bdf8" font-size="11" font-family="monospace" letter-spacing="2">SYSTEM TOPOLOGY &amp; DATA PIPELINES</text>
+    <text x="0" y="26" fill="#ffffff" font-size="22" font-weight="900" class="font-sans">TERRA End-to-End Cloud &amp; Spatial Architecture</text>
+    <text x="0" y="44" fill="#94a3b8" font-size="12" class="font-sans">AWS Free-Tier Serverless Infrastructure • Three.js 3D GIS • Google Gemini Multimodal Reasoning</text>
+  </g>
+
+  <!-- Tier 1: Client Front-End SPA (Vite / React / WebGL) -->
+  <g transform="translate(60, 110)" filter="url(#boxShadow)">
+    <rect x="0" y="0" width="1080" height="110" rx="16" fill="url(#boxGrad)" stroke="#38bdf8" stroke-opacity="0.5" stroke-width="1.2"/>
+    <rect x="0" y="0" width="180" height="28" rx="8" fill="#0284c7"/>
+    <text x="16" y="18" fill="#ffffff" font-size="10" font-weight="bold" font-family="monospace">CLIENT TIER (REACT SPA)</text>
+
+    <!-- Sub-modules -->
+    <g transform="translate(24, 40)">
+      <rect x="0" y="0" width="180" height="52" rx="10" fill="#090e17" stroke="#38bdf8" stroke-width="0.8"/>
+      <text x="14" y="22" fill="#38bdf8" font-size="11" font-weight="bold" class="font-sans">Three.js 3D Globe</text>
+      <text x="14" y="38" fill="#94a3b8" font-size="9" class="font-sans">Atmosphere &amp; Raycasting</text>
+
+      <rect x="195" y="0" width="180" height="52" rx="10" fill="#090e17" stroke="#34d399" stroke-width="0.8"/>
+      <text x="209" y="22" fill="#34d399" font-size="11" font-weight="bold" class="font-sans">Continuous TopNav</text>
+      <text x="209" y="38" fill="#94a3b8" font-size="9" class="font-sans">6 Standard Global Controls</text>
+
+      <rect x="390" y="0" width="180" height="52" rx="10" fill="#090e17" stroke="#f43f5e" stroke-width="0.8"/>
+      <text x="404" y="22" fill="#f43f5e" font-size="11" font-weight="bold" class="font-sans">AeroHealth™ Engine</text>
+      <text x="404" y="38" fill="#94a3b8" font-size="9" class="font-sans">GEMM Biological Age Calc</text>
+
+      <rect x="585" y="0" width="180" height="52" rx="10" fill="#090e17" stroke="#818cf8" stroke-width="0.8"/>
+      <text x="599" y="22" fill="#818cf8" font-size="11" font-weight="bold" class="font-sans">TERRA Copilot AI</text>
+      <text x="599" y="38" fill="#94a3b8" font-size="9" class="font-sans">Human-Readable Diagnostics</text>
+
+      <rect x="780" y="0" width="248" height="52" rx="10" fill="#090e17" stroke="#f59e0b" stroke-width="0.8"/>
+      <text x="794" y="22" fill="#f59e0b" font-size="11" font-weight="bold" class="font-sans">10-Language i18n Matrix</text>
+      <text x="794" y="38" fill="#94a3b8" font-size="9" class="font-sans">Global Persistence in LocalStorage</text>
+    </g>
+  </g>
+
+  <!-- Connectors -->
+  <g stroke="#64748b" stroke-width="1.5" stroke-dasharray="4 4" fill="none">
+    <line x1="240" y1="220" x2="240" y2="280"/>
+    <line x1="600" y1="220" x2="600" y2="280"/>
+    <line x1="940" y1="220" x2="940" y2="280"/>
+  </g>
+
+  <!-- Tier 2: Gateway & Authentication Tier -->
+  <g transform="translate(60, 280)" filter="url(#boxShadow)">
+    <rect x="0" y="0" width="1080" height="90" rx="16" fill="url(#boxGrad)" stroke="#f59e0b" stroke-opacity="0.5" stroke-width="1.2"/>
+    <rect x="0" y="0" width="220" height="28" rx="8" fill="#d97706"/>
+    <text x="16" y="18" fill="#ffffff" font-size="10" font-weight="bold" font-family="monospace">GATEWAY &amp; AUTHENTICATION</text>
+
+    <g transform="translate(40, 38)">
+      <!-- Cognito -->
+      <rect x="0" y="0" width="310" height="40" rx="8" fill="#090e17" stroke="#f59e0b" stroke-width="0.8"/>
+      <text x="16" y="24" fill="#fbbf24" font-size="11" font-weight="bold" class="font-sans">AWS Cognito User Pools</text>
+      <text x="180" y="24" fill="#94a3b8" font-size="10" font-family="monospace">JWT Role Tokens</text>
+
+      <!-- API Gateway -->
+      <rect x="345" y="0" width="310" height="40" rx="8" fill="#090e17" stroke="#f59e0b" stroke-width="0.8"/>
+      <text x="361" y="24" fill="#fbbf24" font-size="11" font-weight="bold" class="font-sans">Amazon API Gateway v2</text>
+      <text x="540" y="24" fill="#94a3b8" font-size="10" font-family="monospace">HTTP API Routes</text>
+
+      <!-- Pre-Signed URL Generator -->
+      <rect x="690" y="0" width="310" height="40" rx="8" fill="#090e17" stroke="#f59e0b" stroke-width="0.8"/>
+      <text x="706" y="24" fill="#fbbf24" font-size="11" font-weight="bold" class="font-sans">S3 Pre-Sign Security</text>
+      <text x="860" y="24" fill="#94a3b8" font-size="10" font-family="monospace">15-Min Signed TTL</text>
+    </g>
+  </g>
+
+  <!-- Connectors -->
+  <g stroke="#64748b" stroke-width="1.5" stroke-dasharray="4 4" fill="none">
+    <line x1="240" y1="370" x2="240" y2="430"/>
+    <line x1="600" y1="370" x2="600" y2="430"/>
+    <line x1="940" y1="370" x2="940" y2="430"/>
+  </g>
+
+  <!-- Tier 3: Compute, Storage & AI Ingestion Tier -->
+  <g transform="translate(60, 430)" filter="url(#boxShadow)">
+    <rect x="0" y="0" width="1080" height="190" rx="16" fill="url(#boxGrad)" stroke="#10b981" stroke-opacity="0.5" stroke-width="1.2"/>
+    <rect x="0" y="0" width="260" height="28" rx="8" fill="#059669"/>
+    <text x="16" y="18" fill="#ffffff" font-size="10" font-weight="bold" font-family="monospace">SERVERLESS COMPUTE, STORAGE &amp; AI</text>
+
+    <g transform="translate(24, 40)">
+      <!-- Lambda Microservices -->
+      <rect x="0" y="0" width="240" height="126" rx="10" fill="#090e17" stroke="#f97316" stroke-width="0.8"/>
+      <text x="16" y="24" fill="#fb923c" font-size="11" font-weight="bold" class="font-sans">AWS Lambda Functions</text>
+      <text x="16" y="46" fill="#cbd5e1" font-size="10" class="font-sans">• terraReportsLambda.ts</text>
+      <text x="16" y="66" fill="#cbd5e1" font-size="10" class="font-sans">• terraPostsLambda.ts</text>
+      <text x="16" y="86" fill="#cbd5e1" font-size="10" class="font-sans">• s3PresignLambda.ts</text>
+      <text x="16" y="108" fill="#94a3b8" font-size="9" font-family="monospace">Auto-scaling Node.js Runtime</text>
+
+      <!-- Amazon DynamoDB -->
+      <rect x="256" y="0" width="250" height="126" rx="10" fill="#090e17" stroke="#3b82f6" stroke-width="0.8"/>
+      <text x="272" y="24" fill="#60a5fa" font-size="11" font-weight="bold" class="font-sans">Amazon DynamoDB</text>
+      <text x="272" y="46" fill="#cbd5e1" font-size="10" class="font-sans">• Table: TerraReports</text>
+      <text x="282" y="62" fill="#94a3b8" font-size="9" font-family="monospace">GSI: CityName-Timestamp</text>
+      <text x="272" y="84" fill="#cbd5e1" font-size="10" class="font-sans">• Table: TerraPosts</text>
+      <text x="282" y="100" fill="#94a3b8" font-size="9" font-family="monospace">PK: CityName, SK: Timestamp</text>
+
+      <!-- Amazon S3 Evidence Storage -->
+      <rect x="522" y="0" width="250" height="126" rx="10" fill="#090e17" stroke="#10b981" stroke-width="0.8"/>
+      <text x="538" y="24" fill="#34d399" font-size="11" font-weight="bold" class="font-sans">Amazon S3 Storage</text>
+      <text x="538" y="46" fill="#cbd5e1" font-size="10" class="font-sans">Bucket: terra-evidence-storage</text>
+      <text x="538" y="68" fill="#94a3b8" font-size="9" class="font-sans">Direct browser upload via PUT</text>
+      <text x="538" y="88" fill="#94a3b8" font-size="9" class="font-sans">Zero server bandwidth load</text>
+      <text x="538" y="108" fill="#34d399" font-size="9" font-family="monospace">Encrypted at rest (SSE-S3)</text>
+
+      <!-- Google Gemini AI & External Sensors -->
+      <rect x="788" y="0" width="240" height="126" rx="10" fill="#090e17" stroke="#a855f7" stroke-width="0.8"/>
+      <text x="804" y="24" fill="#c084fc" font-size="11" font-weight="bold" class="font-sans">Gemini AI &amp; Sensor Feeds</text>
+      <text x="804" y="46" fill="#cbd5e1" font-size="10" class="font-sans">• Gemini 3.8 Flash Engine</text>
+      <text x="804" y="66" fill="#cbd5e1" font-size="10" class="font-sans">• Open-Meteo Global Air API</text>
+      <text x="804" y="86" fill="#cbd5e1" font-size="10" class="font-sans">• Copernicus CAMS Satellites</text>
+      <text x="804" y="108" fill="#c084fc" font-size="9" font-family="monospace">Real-time Telemetry Ingestion</text>
+    </g>
+  </g>
+</svg>
