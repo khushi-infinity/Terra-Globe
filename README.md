@@ -77,15 +77,15 @@ You can run the entire AWS infrastructure locally without creating an AWS accoun
 ### Pathway B: "Ship It" — Deploy to AWS with a Live URL
 
 #### 1. Option 1: AWS Amplify Hosting (Fastest — 3 Minutes)
-1. Push your code to GitHub (`https://github.com/khushi-infinity/Terra`).
+1. Push your code to GitHub (`https://github.com/khushi-infinity/Terra-Globe`).
 2. Log into the [AWS Amplify Console](https://console.aws.amazon.com/amplify).
-3. Click **Host web app** &rarr; Select **GitHub** &rarr; Choose repository `khushi-infinity/Terra`, branch `main`.
+3. Click **Host web app** &rarr; Select **GitHub** &rarr; Choose repository `khushi-infinity/Terra-Globe`, branch `main`.
 4. Amplify automatically detects `amplify.yml` in the root repository.
 5. Click **Save and Deploy**. Your live HTTPS URL will be provisioned in minutes!
 
 #### 2. Option 2: AWS App Runner (Full-Stack Container)
 1. Open the [AWS App Runner Console](https://console.aws.amazon.com/apprunner).
-2. Choose **Source code repository** &rarr; GitHub &rarr; `khushi-infinity/Terra`.
+2. Choose **Source code repository** &rarr; GitHub &rarr; `khushi-infinity/Terra-Globe`.
 3. Configuration: Select **Use configuration file** (uses `apprunner.yaml`).
 4. Click **Create & Deploy**. App Runner handles auto-scaling, container health, and SSL.
 
@@ -181,8 +181,8 @@ All clinical findings, toxicological analyses, and preventative protocols are re
 
 ### 2. Clone and Install
 ```bash
-git clone https://github.com/khushi-infinity/Terra.git
-cd Terra
+git clone https://github.com/khushi-infinity/Terra-Globe.git
+cd Terra-Globe
 npm install
 ```
 
@@ -217,8 +217,35 @@ Navigate to [http://localhost:3000](http://localhost:3000) to view the live plat
 
 ---
 
+## 🔍 How Judges Can Verify the AWS Implementation & Proof
+
+The AWS Hackathon evaluation requires rigorous verification. Here is how judges can verify every tier of the AWS integration:
+
+### 1. Proof of Code & Official AWS SDK v3
+- **Zero Mock Wrapper Illusion**: All cloud data pipelines in `src/aws/awsConfig.ts` and `server.ts` use official AWS SDK packages:
+  - `@aws-sdk/client-s3` & `@aws-sdk/s3-request-presigner` (S3 Pre-Signed Upload tickets)
+  - `@aws-sdk/client-dynamodb` & `@aws-sdk/lib-dynamodb` (DynamoDB DocumentClient reads/writes)
+  - `@aws-sdk/client-sts` (AWS Security Token Service `GetCallerIdentityCommand`)
+- **Live STS Verification API**: Call `GET http://localhost:3000/api/aws/sts/verify` to test active IAM authentication. If AWS credentials are set in `.env`, it returns the real AWS Account ID and IAM Principal ARN.
+
+### 2. Proof of Infrastructure as Code (IaC)
+Every architectural requirement has production-ready IaC templates in the repository:
+- **Serverless SAM Model**: `template.yaml` (HTTP API Gateway, Lambda functions, DynamoDB, S3, Cognito, EventBridge bus, and SNS alert topics).
+- **AWS Cedar Policy Specification**: `aws/cedar/policies.cedar` (Fine-grained authorization rules with `permit` and `forbid` statements).
+- **AWS Step Functions Pipeline**: `aws/step-functions/incident-verification-pipeline.json` (Serverless state machine orchestrating payload validation, SageMaker anomaly scoring, S3 image verification, and SNS fanout).
+- **Amazon SageMaker Inference**: `aws/sagemaker/inference.py` (Real-time Python inference handler for aerosol anomaly scoring).
+- **Amazon Aurora PostgreSQL GIS**: `aws/rds/schema-aurora-gis.sql` (PostGIS spatial topology tables and radial search functions).
+- **Amazon OpenSearch**: `aws/opensearch/terra-index-mapping.json` (Geospatial coordinate and text analyzer mapping).
+- **AWS App Runner & Amplify**: `apprunner.yaml` & `amplify.yml`.
+
+### 3. Proof of Both Hackathon Pathways
+- **Track 1 ("Build It")**: Judges without an AWS account can run `docker compose -f docker-compose.localstack.yml up -d` to spin up local S3, DynamoDB, Lambda, API Gateway, and EventBridge at zero cost with zero bill.
+- **Track 2 ("Ship It")**: Judges or evaluators deploying with an AWS account can link this GitHub repository (`khushi-infinity/Terra-Globe`) directly to AWS Amplify Hosting or execute `sam deploy --guided`.
+
+---
+
 ## 🤝 Contributing
-1. Fork the repository (`https://github.com/khushi-infinity/Terra`).
+1. Fork the repository (`https://github.com/khushi-infinity/Terra-Globe`).
 2. Create your feature branch (`git checkout -b feature/environmental-sensor`).
 3. Commit your changes (`git commit -m 'feat: add atmospheric sensor calibration'`).
 4. Push to the branch (`git push origin feature/environmental-sensor`).
@@ -228,3 +255,4 @@ Navigate to [http://localhost:3000](http://localhost:3000) to view the live plat
 
 ## 📄 License
 Distributed under the Apache-2.0 License. See `LICENSE` for more information.
+

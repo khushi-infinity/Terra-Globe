@@ -26,7 +26,7 @@ case $choice in
     echo ""
     echo "🚀 [AWS App Runner]"
     echo "1. Open AWS App Runner Console: https://console.aws.amazon.com/apprunner"
-    echo "2. Select 'Source code repository', choose GitHub -> 'khushi-infinity/Terra', branch 'main'."
+    echo "2. Select 'Source code repository', choose GitHub -> 'khushi-infinity/Terra-Globe', branch 'main'."
     echo "3. Configuration file: Use 'apprunner.yaml' (already included in repository)."
     echo "4. Click Create & Deploy. App Runner provisions containers, SSL, and custom domain automatically."
     ;;

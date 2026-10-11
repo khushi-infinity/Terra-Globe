@@ -22,7 +22,9 @@ import {
   Lock,
   Radio,
   FileCode,
-  Rocket
+  Rocket,
+  AlertCircle,
+  KeyRound
 } from 'lucide-react';
 
 export const AwsArchitectureModal: React.FC = () => {
@@ -31,9 +33,10 @@ export const AwsArchitectureModal: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'matrix' | 'testbench' | 'serverless' | 'deploy'>('matrix');
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
   const [architectureData, setArchitectureData] = useState<any>(null);
+  const [stsStatus, setStsStatus] = useState<any>(null);
 
   // Interactive Testbench State
-  const [testEndpoint, setTestEndpoint] = useState<'sagemaker' | 'stepfunctions' | 'cedar' | 'eventbridge'>('sagemaker');
+  const [testEndpoint, setTestEndpoint] = useState<'sts' | 'sagemaker' | 'stepfunctions' | 'cedar' | 'eventbridge'>('sts');
   const [testLoading, setTestLoading] = useState(false);
   const [testResult, setTestResult] = useState<any>(null);
 
@@ -41,7 +44,12 @@ export const AwsArchitectureModal: React.FC = () => {
     if (isAwsInspectorOpen) {
       fetch('/api/aws/architecture')
         .then(r => r.json())
-        .then(data => setArchitectureData(data))
+        .then(data => {
+          setArchitectureData(data);
+          if (data.credentialsVerification) {
+            setStsStatus(data.credentialsVerification);
+          }
+        })
         .catch(() => {});
     }
   }, [isAwsInspectorOpen]);
@@ -54,12 +62,14 @@ export const AwsArchitectureModal: React.FC = () => {
     setTimeout(() => setCopiedCode(null), 2500);
   };
 
-  const runTestbench = async (type: 'sagemaker' | 'stepfunctions' | 'cedar' | 'eventbridge') => {
+  const runTestbench = async (type: 'sts' | 'sagemaker' | 'stepfunctions' | 'cedar' | 'eventbridge') => {
     setTestLoading(true);
     setTestResult(null);
     try {
       let res;
-      if (type === 'sagemaker') {
+      if (type === 'sts') {
+        res = await fetch('/api/aws/sts/verify');
+      } else if (type === 'sagemaker') {
         res = await fetch('/api/aws/sagemaker/predict', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -87,6 +97,9 @@ export const AwsArchitectureModal: React.FC = () => {
       if (res) {
         const data = await res.json();
         setTestResult(data);
+        if (type === 'sts') {
+          setStsStatus(data);
+        }
       }
     } catch (e: any) {
       setTestResult({ error: e.message });
@@ -128,11 +141,13 @@ permit(
     resource is ResourceType::"EnvironmentalReport"
 );`;
 
+  const isLiveConnected = stsStatus?.connected === true;
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-xl animate-in fade-in duration-200 select-none">
       <div className="glass-panel-active rounded-3xl p-6 w-full max-w-4xl border border-amber-500/40 shadow-2xl text-left bg-slate-950/95 text-white max-h-[92vh] flex flex-col">
         {/* Header */}
-        <div className="flex items-center justify-between pb-3.5 border-b border-white/10 mb-4 flex-shrink-0">
+        <div className="flex items-center justify-between pb-3.5 border-b border-white/10 mb-3 flex-shrink-0">
           <div className="flex items-center gap-3">
             <div className="p-2.5 rounded-2xl bg-amber-500/20 text-amber-400 border border-amber-500/30">
               <Cpu className="w-6 h-6" />
@@ -141,11 +156,11 @@ permit(
               <div className="flex items-center gap-2">
                 <h2 className="text-xl font-bold tracking-tight text-white">AWS Cloud Architecture &amp; Hackathon Hub</h2>
                 <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
-                  BUILD IT &amp; SHIP IT READY
+                  BUILD IT &amp; SHIP IT
                 </span>
               </div>
               <p className="text-xs text-slate-400">
-                Full-stack AWS serverless, container, AI inference, and fine-grained Cedar authorization
+                Official Hackathon Evaluation &amp; Verification Center • GitHub: <span className="text-amber-300 font-mono">khushi-infinity/Terra-Globe</span>
               </p>
             </div>
           </div>
@@ -154,6 +169,41 @@ permit(
             className="p-2 text-slate-400 hover:text-white rounded-xl hover:bg-white/10 transition-colors"
           >
             <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Live Credential & Mode Diagnostic Banner */}
+        <div className="mb-3 p-3 rounded-2xl bg-slate-900/90 border border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5 text-xs flex-shrink-0">
+          <div className="flex items-center gap-2.5">
+            <div className={`p-1.5 rounded-xl ${isLiveConnected ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30'}`}>
+              <KeyRound className="w-4 h-4" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="font-bold text-white">AWS Integration Status:</span>
+                <span className={`px-2 py-0.5 rounded-md font-mono text-[10px] font-bold ${
+                  isLiveConnected
+                    ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                    : 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30'
+                }`}>
+                  {isLiveConnected ? 'LIVE AWS CLOUD AUTHENTICATED' : 'LOCALSTACK / ZERO-COST SANDBOX MODE'}
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-400">
+                {isLiveConnected
+                  ? `IAM Principal: ${stsStatus.arn} • Account: ${stsStatus.accountId} • Region: ${stsStatus.region}`
+                  : 'Track 1 "Build It" mode active: zero AWS account & zero card required. Real AWS SDK initialized with local emulation.'}
+              </p>
+            </div>
+          </div>
+
+          <button
+            onClick={() => runTestbench('sts')}
+            disabled={testLoading}
+            className="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-medium text-xs flex items-center gap-1.5 border border-white/15 transition-all flex-shrink-0"
+          >
+            {testLoading && testEndpoint === 'sts' ? <Activity className="w-3.5 h-3.5 animate-spin" /> : <Shield className="w-3.5 h-3.5 text-amber-400" />}
+            Verify IAM (STS)
           </button>
         </div>
 
@@ -213,9 +263,16 @@ permit(
           {/* TAB 1: HACKATHON MATRIX */}
           {activeTab === 'matrix' && (
             <div className="space-y-4">
-              <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-200/90 leading-relaxed">
-                <span className="font-bold text-amber-300">AWS Hackathon Alignment Matrix:</span> TERRA maps 100% to every evaluation category.
-                Developers and judges can run it locally with <strong>LocalStack / SAM CLI (no account, no credit card, zero bill)</strong> or ship directly to production via <strong>AWS Amplify, App Runner, or ECS Fargate</strong>!
+              <div className="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-200/90 leading-relaxed">
+                <span className="font-bold text-amber-300">How the Hackathon Rules Apply:</span> The competition specifies two official pathways:
+                <div className="mt-1.5 grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <div className="p-2 rounded-xl bg-black/40 border border-white/5">
+                    <strong className="text-white">Track 1: "Build It"</strong> &mdash; Open source, on your machine. <em>No AWS account, no card, no bill.</em> Fully satisfied via LocalStack (<code className="text-amber-300">docker-compose.localstack.yml</code>), SAM CLI (<code className="text-amber-300">template.yaml</code>), Finch (<code className="text-amber-300">Dockerfile</code>), and Corretto.
+                  </div>
+                  <div className="p-2 rounded-xl bg-black/40 border border-white/5">
+                    <strong className="text-white">Track 2: "Ship It"</strong> &mdash; Deployed with a live URL. Satisfied via AWS Amplify Hosting (<code className="text-amber-300">amplify.yml</code>), AWS App Runner (<code className="text-amber-300">apprunner.yaml</code>), Amazon SageMaker AI, and Cognito.
+                  </div>
+                </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -228,10 +285,10 @@ permit(
                     <span className="text-[10px] px-2 py-0.5 rounded-md bg-purple-500/20 text-purple-300 font-mono">READY</span>
                   </div>
                   <p className="text-[11px] text-slate-300">
-                    <strong className="text-white">Build It:</strong> Strands Agents SDK &amp; PartyRock prompts (<code className="text-purple-300">aws/partyrock/</code>)
+                    <strong className="text-white">Build It:</strong> Strands Agents SDK &amp; PartyRock prompts (<code className="text-purple-300">aws/partyrock/terra-environmental-prompts.json</code>)
                   </p>
                   <p className="text-[11px] text-slate-300">
-                    <strong className="text-white">Ship It:</strong> Amazon SageMaker AI real-time aerosol anomaly predictor endpoint
+                    <strong className="text-white">Ship It:</strong> Amazon SageMaker AI real-time aerosol anomaly predictor endpoint (<code className="text-purple-300">aws/sagemaker/inference.py</code>)
                   </p>
                 </div>
 
@@ -244,10 +301,10 @@ permit(
                     <span className="text-[10px] px-2 py-0.5 rounded-md bg-blue-500/20 text-blue-300 font-mono">READY</span>
                   </div>
                   <p className="text-[11px] text-slate-300">
-                    <strong className="text-white">Build It:</strong> Finch container build (<code className="text-blue-300">Dockerfile</code>), EKS Distro manifests (<code className="text-blue-300">k8s/</code>)
+                    <strong className="text-white">Build It:</strong> Finch container build (<code className="text-blue-300">Dockerfile</code>), EKS Distro manifests (<code className="text-blue-300">k8s/deployment.yaml</code>)
                   </p>
                   <p className="text-[11px] text-slate-300">
-                    <strong className="text-white">Ship It:</strong> Amazon ECS Fargate task definition &amp; AWS App Runner (<code className="text-blue-300">apprunner.yaml</code>)
+                    <strong className="text-white">Ship It:</strong> Amazon ECS Fargate task definition (<code className="text-blue-300">aws/ecs/task-definition.json</code>) &amp; AWS App Runner (<code className="text-blue-300">apprunner.yaml</code>)
                   </p>
                 </div>
 
@@ -263,7 +320,7 @@ permit(
                     <strong className="text-white">Build It:</strong> AWS SAM CLI (<code className="text-amber-300">template.yaml</code>) &amp; LocalStack (<code className="text-amber-300">docker-compose.localstack.yml</code>)
                   </p>
                   <p className="text-[11px] text-slate-300">
-                    <strong className="text-white">Ship It:</strong> AWS Lambda, API Gateway HTTP API, AWS Step Functions workflow
+                    <strong className="text-white">Ship It:</strong> AWS Lambda (<code className="text-amber-300">src/aws/lambda/</code>), API Gateway HTTP API, AWS Step Functions (<code className="text-amber-300">aws/step-functions/</code>)
                   </p>
                 </div>
 
@@ -292,10 +349,10 @@ permit(
                     <span className="text-[10px] px-2 py-0.5 rounded-md bg-cyan-500/20 text-cyan-300 font-mono">READY</span>
                   </div>
                   <p className="text-[11px] text-slate-300">
-                    <strong className="text-white">Build It:</strong> Amazon OpenSearch geospatial mapping (<code className="text-cyan-300">aws/opensearch/</code>)
+                    <strong className="text-white">Build It:</strong> Amazon OpenSearch geospatial mapping (<code className="text-cyan-300">aws/opensearch/terra-index-mapping.json</code>)
                   </p>
                   <p className="text-[11px] text-slate-300">
-                    <strong className="text-white">Ship It:</strong> Amazon S3 (pre-signed upload), DynamoDB, Amazon Aurora PostGIS
+                    <strong className="text-white">Ship It:</strong> Amazon S3 (presigned evidence upload), DynamoDB (<code className="text-cyan-300">TerraReports</code>, <code className="text-cyan-300">TerraPosts</code>), Aurora PostGIS (<code className="text-cyan-300">aws/rds/schema-aurora-gis.sql</code>)
                   </p>
                 </div>
 
@@ -311,7 +368,7 @@ permit(
                     <strong className="text-white">Build It:</strong> AWS Cedar fine-grained RBAC/ABAC policies (<code className="text-rose-300">aws/cedar/policies.cedar</code>)
                   </p>
                   <p className="text-[11px] text-slate-300">
-                    <strong className="text-white">Ship It:</strong> Amazon Cognito User Pool &amp; Identity validation
+                    <strong className="text-white">Ship It:</strong> Amazon Cognito User Pool &amp; JWT identity validation (<code className="text-rose-300">src/components/auth/CognitoAuthModal.tsx</code>)
                   </p>
                 </div>
 
@@ -324,7 +381,7 @@ permit(
                     <span className="text-[10px] px-2 py-0.5 rounded-md bg-orange-500/20 text-orange-300 font-mono">READY</span>
                   </div>
                   <p className="text-[11px] text-slate-300">
-                    <strong className="text-white">Ship It:</strong> Amazon CloudFront edge CDN (<code className="text-orange-300">aws/cloudfront/</code>), EventBridge event bus (<code className="text-orange-300">terra-environmental-bus</code>), Amazon SNS SMS/Email notifications, and CloudWatch custom dashboards (<code className="text-orange-300">aws/cloudwatch/</code>).
+                    <strong className="text-white">Ship It:</strong> Amazon CloudFront edge CDN (<code className="text-orange-300">aws/cloudfront/distribution-config.json</code>), EventBridge event bus (<code className="text-orange-300">terra-environmental-bus</code>), Amazon SNS SMS/Email notifications, and CloudWatch custom dashboards (<code className="text-orange-300">aws/cloudwatch/dashboard.json</code>).
                   </p>
                 </div>
               </div>
@@ -335,11 +392,25 @@ permit(
           {activeTab === 'testbench' && (
             <div className="space-y-4">
               <div className="p-3 rounded-2xl bg-slate-900 border border-white/10 text-xs text-slate-300">
-                Test any integrated AWS cloud service live right from this console:
+                Execute live AWS verification requests. Both live AWS IAM credentials and LocalStack emulation return verified payloads:
               </div>
 
               {/* Selector Buttons */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                <button
+                  onClick={() => { setTestEndpoint('sts'); runTestbench('sts'); }}
+                  className={`p-2.5 rounded-xl text-xs font-medium border text-left transition-all ${
+                    testEndpoint === 'sts'
+                      ? 'bg-blue-500/20 border-blue-500 text-blue-200'
+                      : 'bg-white/5 border-white/10 text-slate-400 hover:text-white'
+                  }`}
+                >
+                  <div className="font-bold flex items-center gap-1.5 mb-1">
+                    <Shield className="w-3.5 h-3.5 text-blue-400" /> STS Identity
+                  </div>
+                  <div className="text-[10px] text-slate-400">AWS IAM Auth Check</div>
+                </button>
+
                 <button
                   onClick={() => { setTestEndpoint('sagemaker'); runTestbench('sagemaker'); }}
                   className={`p-2.5 rounded-xl text-xs font-medium border text-left transition-all ${
@@ -393,14 +464,14 @@ permit(
                   <div className="font-bold flex items-center gap-1.5 mb-1">
                     <Radio className="w-3.5 h-3.5 text-orange-400" /> EventBridge &amp; SNS
                   </div>
-                  <div className="text-[10px] text-slate-400">Emergency Alert Fanout</div>
+                  <div className="text-[10px] text-slate-400">Alert Bus Fanout</div>
                 </button>
               </div>
 
               {/* Action Trigger */}
               <div className="flex items-center justify-between p-3 rounded-xl bg-black/40 border border-white/5">
                 <span className="text-xs text-slate-400 font-mono">
-                  Endpoint: /api/aws/{testEndpoint === 'sagemaker' ? 'sagemaker/predict' : testEndpoint === 'stepfunctions' ? 'stepfunctions/start-verification' : testEndpoint === 'cedar' ? 'cedar/authorize' : 'eventbridge/emit'}
+                  Endpoint: /api/aws/{testEndpoint === 'sts' ? 'sts/verify' : testEndpoint === 'sagemaker' ? 'sagemaker/predict' : testEndpoint === 'stepfunctions' ? 'stepfunctions/start-verification' : testEndpoint === 'cedar' ? 'cedar/authorize' : 'eventbridge/emit'}
                 </span>
                 <button
                   onClick={() => runTestbench(testEndpoint)}
@@ -494,7 +565,7 @@ permit(
                 <ol className="list-decimal list-inside text-xs text-slate-300 space-y-1 pl-1">
                   <li>Go to the <a href="https://console.aws.amazon.com/amplify" target="_blank" rel="noreferrer" className="text-amber-400 underline">AWS Amplify Console</a>.</li>
                   <li>Click <strong>Host web app</strong> &rarr; Select <strong>GitHub</strong>.</li>
-                  <li>Choose your repository: <code className="text-emerald-300">khushi-infinity/Terra</code> &amp; branch <code className="text-emerald-300">main</code>.</li>
+                  <li>Choose your repository: <code className="text-emerald-300">khushi-infinity/Terra-Globe</code> &amp; branch <code className="text-emerald-300">main</code>.</li>
                   <li>Amplify automatically recognizes <code className="text-emerald-300">amplify.yml</code> in the root and builds the app.</li>
                   <li>Click <strong>Save and deploy</strong>. Your live HTTPS URL will be active in ~3 minutes!</li>
                 </ol>
@@ -507,7 +578,7 @@ permit(
                 </h4>
                 <ol className="list-decimal list-inside text-xs text-slate-300 space-y-1 pl-1">
                   <li>Open the <a href="https://console.aws.amazon.com/apprunner" target="_blank" rel="noreferrer" className="text-amber-400 underline">AWS App Runner Console</a>.</li>
-                  <li>Select <strong>Source code repository</strong> &rarr; GitHub &rarr; repository <code className="text-blue-300">khushi-infinity/Terra</code>.</li>
+                  <li>Select <strong>Source code repository</strong> &rarr; GitHub &rarr; repository <code className="text-blue-300">khushi-infinity/Terra-Globe</code>.</li>
                   <li>Configuration: Select <strong>Use configuration file</strong> (<code className="text-blue-300">apprunner.yaml</code> is already provided).</li>
                   <li>Click <strong>Create &amp; Deploy</strong>. App Runner automatically provisions containers, auto-scaling, and SSL.</li>
                 </ol>
@@ -530,8 +601,8 @@ sam deploy --guided`}
         {/* Footer */}
         <div className="pt-3 border-t border-white/10 flex items-center justify-between text-xs text-slate-400 flex-shrink-0">
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span>AWS Region: <strong className="text-white">us-east-1</strong></span>
+            <span className={`w-2 h-2 rounded-full ${isLiveConnected ? 'bg-emerald-400' : 'bg-cyan-400'} animate-pulse`}></span>
+            <span>AWS Region: <strong className="text-white">us-east-1</strong> &bull; Repo: <strong className="text-amber-300 font-mono">khushi-infinity/Terra-Globe</strong></span>
           </div>
           <button
             onClick={() => setAwsInspectorOpen(false)}

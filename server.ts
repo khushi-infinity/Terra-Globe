@@ -7,6 +7,7 @@ import {
   AWS_ARCHITECTURE_INFO,
   AWS_REGION,
   hasAwsCredentials,
+  verifyAwsCredentials,
   dynamoDocClient,
   DYNAMODB_REPORTS_TABLE,
   DYNAMODB_POSTS_TABLE
@@ -389,10 +390,13 @@ app.get('/api/health', (req: Request, res: Response) => {
 });
 
 // --- AWS ARCHITECTURE METADATA & HACKATHON MATRIX (FOR JUDGES & EVALUATORS) ---
-app.get('/api/aws/architecture', (req: Request, res: Response) => {
+app.get('/api/aws/architecture', async (req: Request, res: Response) => {
+  const credentialsVerification = await verifyAwsCredentials();
+
   res.json({
     ...AWS_ARCHITECTURE_INFO,
     hasCredentialsConfigured: hasAwsCredentials,
+    credentialsVerification,
     hackathonMatrix: {
       agentsAndAi: {
         buildIt: 'Strands Agents SDK & PartyRock (aws/partyrock/terra-environmental-prompts.json)',
@@ -441,6 +445,16 @@ app.get('/api/aws/architecture', (req: Request, res: Response) => {
     activeStepFunctionsArn: 'arn:aws:states:us-east-1:123456789012:stateMachine:TerraIncidentVerification',
     activeEventBus: 'terra-environmental-bus'
   });
+});
+
+// --- AWS STS GET-CALLER-IDENTITY VERIFICATION (FOR JUDGES & EVALUATION PROOF) ---
+app.get('/api/aws/sts/verify', async (req: Request, res: Response) => {
+  try {
+    const result = await verifyAwsCredentials();
+    res.json(result);
+  } catch (err: any) {
+    res.status(500).json({ error: 'Failed to verify AWS credentials', details: err.message });
+  }
 });
 
 // --- AMAZON SAGEMAKER AI: AEROSOL ANOMALY & TOXICITY INFERENCE ---
