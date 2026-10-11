@@ -28,6 +28,7 @@ import {
 import { RealAirQuality } from '../services/airQualityService';
 import { RealWeather } from '../services/weatherService';
 import { SupportedLanguage } from '../i18n/translations';
+import { computeBiologicalAge } from '../services/bioAgeService';
 
 const getInitialLanguage = (): SupportedLanguage => {
   try {
@@ -284,37 +285,67 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   // Biological Age Engine
   isBioAgePanelOpen: false,
-  selectedBioAgeData: null,
+  selectedBioAgeData: computeBiologicalAge({
+    locationName: 'Delhi NCR',
+    aqi: 185,
+    pm25: 112,
+    pm10: 198,
+    userAge: 28,
+    dailyHoursOutdoor: 4,
+    coordinates: [77.2090, 28.6139]
+  }),
   isBioAgeLoading: false,
   userBaselineAge: 28,
   dailyExposureHours: 4,
-  setBioAgePanelOpen: (open: boolean) => set({ isBioAgePanelOpen: open }),
-  setUserBaselineAge: (age: number) => {
-    set({ userBaselineAge: age });
-    if (get().selectedBioAgeData) {
+  setBioAgePanelOpen: (open: boolean) => {
+    set({ isBioAgePanelOpen: open });
+    if (open && !get().selectedBioAgeData) {
       get().calculateBiologicalAge();
     }
+  },
+  setUserBaselineAge: (age: number) => {
+    set({ userBaselineAge: age });
+    get().calculateBiologicalAge();
   },
   setDailyExposureHours: (hours: number) => {
     set({ dailyExposureHours: hours });
-    if (get().selectedBioAgeData) {
-      get().calculateBiologicalAge();
-    }
+    get().calculateBiologicalAge();
   },
 
   calculateBiologicalAge: async (customCoords, customAQI, customCity) => {
-    set({ isBioAgeLoading: true, isBioAgePanelOpen: true });
+    const state = get();
+    const coords = customCoords || state.currentLocation.center;
+    const aqi = customAQI ?? (state.realAirQuality?.us_aqi ?? state.displayedMetrics.airQuality.aqi);
+    const pm25 = state.realAirQuality?.pm2_5 ?? state.displayedMetrics.airQuality.pm25;
+    const pm10 = state.realAirQuality?.pm10 ?? state.displayedMetrics.airQuality.pm10;
+    const cityName = customCity || state.currentLocation.name;
+
+    // 1. Immediately calculate deterministic Lancet GEMM model client-side (works 100% in live links, S3, offline)
+    const instantLocalResult = computeBiologicalAge({
+      aqi,
+      pm25,
+      pm10,
+      userAge: state.userBaselineAge,
+      dailyHoursOutdoor: state.dailyExposureHours,
+      locationName: cityName,
+      coordinates: coords
+    });
+
+    set({
+      selectedBioAgeData: instantLocalResult,
+      isBioAgePanelOpen: true,
+      isBioAgeLoading: false
+    });
+
+    // 2. Asynchronously try to fetch Gemini AI enriched analysis (if backend server is available)
     try {
-      const state = get();
-      const coords = customCoords || state.currentLocation.center;
-      const aqi = customAQI ?? (state.realAirQuality?.us_aqi ?? state.displayedMetrics.airQuality.aqi);
-      const pm25 = state.realAirQuality?.pm2_5 ?? state.displayedMetrics.airQuality.pm25;
-      const pm10 = state.realAirQuality?.pm10 ?? state.displayedMetrics.airQuality.pm10;
-      const cityName = customCity || state.currentLocation.name;
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 4000);
 
       const res = await fetch('/api/gemini/biological-age', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        signal: controller.signal,
         body: JSON.stringify({
           aqi,
           pm25,
@@ -326,12 +357,14 @@ export const useAppStore = create<AppState>((set, get) => ({
         })
       });
 
-      if (!res.ok) throw new Error('Failed to compute biological age');
-      const data: BioAgeResult = await res.json();
-      set({ selectedBioAgeData: data, isBioAgeLoading: false });
-    } catch (err) {
-      console.warn('BioAge API call error:', err);
-      set({ isBioAgeLoading: false });
+      clearTimeout(timeoutId);
+
+      if (res.ok) {
+        const enrichedData: BioAgeResult = await res.json();
+        set({ selectedBioAgeData: enrichedData });
+      }
+    } catch {
+      // Gracefully silent: the instant local GEMM calculation is already active and accurate
     }
   },
 

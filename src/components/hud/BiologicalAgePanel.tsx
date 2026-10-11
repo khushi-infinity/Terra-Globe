@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAppStore } from '../../store/useAppStore';
 import { useTranslation } from '../../i18n/useTranslation';
 import { HumanReadableText } from '../common/HumanReadableText';
@@ -37,6 +37,12 @@ export const BiologicalAgePanel: React.FC = () => {
 
   const [activeTab, setActiveTab] = useState<'organs' | 'diseases' | 'prevention'>('organs');
   const [copiedBriefing, setCopiedBriefing] = useState(false);
+
+  useEffect(() => {
+    if (isBioAgePanelOpen && !selectedBioAgeData) {
+      calculateBiologicalAge();
+    }
+  }, [isBioAgePanelOpen, selectedBioAgeData, calculateBiologicalAge]);
 
   if (!isBioAgePanelOpen) return null;
 
