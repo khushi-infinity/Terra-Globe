@@ -1,0 +1,38 @@
+{
+  "family": "terra-environmental-twin",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": [ "FARGATE" ],
+  "cpu": "1024",
+  "memory": "2048",
+  "executionRoleArn": "arn:aws:iam::123456789012:role/TerraEcsTaskExecutionRole",
+  "taskRoleArn": "arn:aws:iam::123456789012:role/TerraEcsTaskRole",
+  "containerDefinitions": [
+    {
+      "name": "terra-app",
+      "image": "123456789012.dkr.ecr.us-east-1.amazonaws.com/terra-twin:latest",
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 3000,
+          "hostPort": 3000,
+          "protocol": "tcp"
+        }
+      ],
+      "environment": [
+        { "name": "NODE_ENV", "value": "production" },
+        { "name": "AWS_REGION", "value": "us-east-1" },
+        { "name": "TERRA_S3_BUCKET", "value": "terra-evidence-storage" },
+        { "name": "DYNAMODB_REPORTS_TABLE", "value": "TerraReports" },
+        { "name": "DYNAMODB_POSTS_TABLE", "value": "TerraPosts" }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/terra-environmental-twin",
+          "awslogs-region": "us-east-1",
+          "awslogs-stream-prefix": "ecs"
+        }
+      }
+    }
+  ]
+}

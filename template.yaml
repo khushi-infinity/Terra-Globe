@@ -1,0 +1,223 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  TERRA - 3D Environmental Digital Twin & AeroHealth Serverless Architecture
+  Deploys API Gateway, Lambda Functions, DynamoDB, S3, Cognito, EventBridge, and SNS.
+
+Globals:
+  Function:
+    Timeout: 30
+    MemorySize: 512
+    Runtime: nodejs20.x
+    Architectures:
+      - x86_64
+    Environment:
+      Variables:
+        TERRA_S3_BUCKET: !Ref TerraEvidenceBucket
+        DYNAMODB_REPORTS_TABLE: !Ref TerraReportsTable
+        DYNAMODB_POSTS_TABLE: !Ref TerraPostsTable
+        EVENT_BUS_NAME: !Ref TerraEventBus
+        SNS_ALERT_TOPIC: !Ref TerraAlertTopic
+
+Resources:
+  # ==========================================
+  # 1. API GATEWAY HTTP API
+  # ==========================================
+  TerraHttpApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      CorsConfiguration:
+        AllowMethods:
+          - GET
+          - POST
+          - PUT
+          - DELETE
+          - OPTIONS
+        AllowHeaders:
+          - Content-Type
+          - Authorization
+        AllowOrigins:
+          - '*'
+
+  # ==========================================
+  # 2. AMAZON DYNAMODB TABLES
+  # ==========================================
+  TerraReportsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: TerraReports
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: ReportId
+          AttributeType: S
+        - AttributeName: CityName
+          AttributeType: S
+      KeySchema:
+        - AttributeName: ReportId
+          KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: CityIndex
+          KeySchema:
+            - AttributeName: CityName
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+
+  TerraPostsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: TerraPosts
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: PostId
+          AttributeType: S
+        - AttributeName: CityName
+          AttributeType: S
+      KeySchema:
+        - AttributeName: PostId
+          KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: CityPostsIndex
+          KeySchema:
+            - AttributeName: CityName
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+
+  # ==========================================
+  # 3. AMAZON S3 EVIDENCE BUCKET
+  # ==========================================
+  TerraEvidenceBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub 'terra-evidence-${AWS::AccountId}-${AWS::Region}'
+      CorsConfiguration:
+        CorsRules:
+          - AllowedHeaders:
+              - '*'
+            AllowedMethods:
+              - GET
+              - PUT
+              - POST
+              - HEAD
+            AllowedOrigins:
+              - '*'
+            MaxAge: 3600
+
+  # ==========================================
+  # 4. AWS COGNITO USER POOL & CLIENT
+  # ==========================================
+  TerraUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: TerraAuthPool
+      UsernameAttributes:
+        - email
+      AutoVerifiedAttributes:
+        - email
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+          RequireLowercase: true
+          RequireNumbers: true
+          RequireSymbols: false
+          RequireUppercase: true
+
+  TerraUserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      ClientName: TerraWebClient
+      UserPoolId: !Ref TerraUserPool
+      GenerateSecret: false
+      ExplicitAuthFlows:
+        - ALLOW_USER_SRP_AUTH
+        - ALLOW_REFRESH_TOKEN_AUTH
+        - ALLOW_USER_PASSWORD_AUTH
+
+  # ==========================================
+  # 5. SERVERLESS LAMBDA FUNCTIONS
+  # ==========================================
+  TerraReportsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./
+      Handler: src/aws/lambda/terraReportsLambda.handler
+      Description: Ingests ground-truth citizen pollution reports into DynamoDB
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TerraReportsTable
+        - S3CrudPolicy:
+            BucketName: !Ref TerraEvidenceBucket
+      Events:
+        GetReports:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref TerraHttpApi
+            Path: /api/aws/dynamodb/reports
+            Method: GET
+        CreateReport:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref TerraHttpApi
+            Path: /api/aws/dynamodb/reports
+            Method: POST
+
+  TerraAeroHealthFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./
+      Handler: src/aws/lambda/terraAeroHealthLambda.handler
+      Description: Computes biological aging displacement and clinical hazard ratios
+      Events:
+        CalculateAge:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref TerraHttpApi
+            Path: /api/aws/aerohealth/calculate
+            Method: POST
+
+  TerraEventBridgeHandlerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./
+      Handler: src/aws/lambda/terraEventBridgeLambda.handler
+      Description: Processes hazardous air events and fans out SNS SMS/Email notifications
+      Policies:
+        - SNSPublishMessagePolicy:
+            TopicName: !GetAtt TerraAlertTopic.TopicName
+      Events:
+        EventBridgeRule:
+          Type: CloudWatchEvent
+          Properties:
+            EventBusName: !Ref TerraEventBus
+            Pattern:
+              source:
+                - "terra.environmental.alert"
+
+  # ==========================================
+  # 6. EVENTBRIDGE & SNS ALERT PIPELINE
+  # ==========================================
+  TerraEventBus:
+    Type: AWS::Events::EventBus
+    Properties:
+      Name: terra-environmental-bus
+
+  TerraAlertTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: TerraHazardousAirAlerts
+      DisplayName: TERRA Emergency Environmental Broadcasts
+
+Outputs:
+  HttpApiUrl:
+    Description: "Deployed API Gateway HTTP API Endpoint URL"
+    Value: !Sub "https://${TerraHttpApi}.execute-api.${AWS::Region}.amazonaws.com"
+  S3BucketName:
+    Description: "Amazon S3 Citizen Photo Evidence Bucket"
+    Value: !Ref TerraEvidenceBucket
+  UserPoolId:
+    Description: "Amazon Cognito User Pool ID"
+    Value: !Ref TerraUserPool
+  UserPoolClientId:
+    Description: "Amazon Cognito App Client ID"
+    Value: !Ref TerraUserPoolClient

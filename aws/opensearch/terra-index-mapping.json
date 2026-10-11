@@ -1,0 +1,32 @@
+{
+  "settings": {
+    "number_of_shards": 2,
+    "number_of_replicas": 1,
+    "analysis": {
+      "analyzer": {
+        "environmental_analyzer": {
+          "type": "standard",
+          "stopwords": "_english_"
+        }
+      }
+    }
+  },
+  "mappings": {
+    "properties": {
+      "reportId": { "type": "keyword" },
+      "cityName": { "type": "keyword" },
+      "pollutionType": { "type": "keyword" },
+      "severity": { "type": "keyword" },
+      "timestamp": { "type": "date" },
+      "description": { "type": "text", "analyzer": "environmental_analyzer" },
+      "location": {
+        "type": "geo_point"
+      },
+      "pm25": { "type": "float" },
+      "pm10": { "type": "float" },
+      "aqi": { "type": "integer" },
+      "tags": { "type": "keyword" },
+      "status": { "type": "keyword" }
+    }
+  }
+}

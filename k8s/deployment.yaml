@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: terra-environmental-twin
+  labels:
+    app: terra-twin
+    framework: aws-eks
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: terra-twin
+  template:
+    metadata:
+      labels:
+        app: terra-twin
+    spec:
+      containers:
+        - name: terra-twin
+          image: 123456789012.dkr.ecr.us-east-1.amazonaws.com/terra-twin:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: NODE_ENV
+              value: "production"
+            - name: AWS_REGION
+              value: "us-east-1"
+            - name: TERRA_S3_BUCKET
+              value: "terra-evidence-storage"
+            - name: DYNAMODB_REPORTS_TABLE
+              value: "TerraReports"
+            - name: DYNAMODB_POSTS_TABLE
+              value: "TerraPosts"
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "1024Mi"
+              cpu: "1000m"
+          livenessProbe:
+            httpGet:
+              path: /api/aws/architecture
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 15
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: terra-twin-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: terra-twin
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000

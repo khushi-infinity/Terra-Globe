@@ -1,0 +1,71 @@
+{
+  "widgets": [
+    {
+      "type": "metric",
+      "x": 0,
+      "y": 0,
+      "width": 12,
+      "height": 6,
+      "properties": {
+        "metrics": [
+          [ "TERRA/AeroHealth", "BiologicalAgeCalculations", { "stat": "Sum", "period": 300 } ],
+          [ ".", "HighAQIAlarmsTriggered", { "stat": "Sum", "period": 300, "color": "#ef4444" } ],
+          [ ".", "CitizenReportsIngested", { "stat": "Sum", "period": 300, "color": "#10b981" } ]
+        ],
+        "view": "timeSeries",
+        "stacked": false,
+        "region": "us-east-1",
+        "title": "TERRA Real-Time Environmental Ingestion & AeroHealth Metrics"
+      }
+    },
+    {
+      "type": "metric",
+      "x": 12,
+      "y": 0,
+      "width": 12,
+      "height": 6,
+      "properties": {
+        "metrics": [
+          [ "AWS/Lambda", "Duration", "FunctionName", "TerraReportsLambda", { "stat": "Average" } ],
+          [ "...", "TerraAeroHealthLambda", { "stat": "Average" } ],
+          [ "AWS/Lambda", "Errors", "FunctionName", "TerraReportsLambda", { "stat": "Sum", "color": "#dc2626" } ]
+        ],
+        "view": "timeSeries",
+        "region": "us-east-1",
+        "title": "AWS Lambda Serverless Performance & Latency"
+      }
+    },
+    {
+      "type": "metric",
+      "x": 0,
+      "y": 6,
+      "width": 12,
+      "height": 6,
+      "properties": {
+        "metrics": [
+          [ "AWS/DynamoDB", "ConsumedWriteCapacityUnits", "TableName", "TerraReports", { "stat": "Sum" } ],
+          [ "...", "TerraPosts", { "stat": "Sum" } ]
+        ],
+        "view": "timeSeries",
+        "region": "us-east-1",
+        "title": "Amazon DynamoDB Consumed Capacity"
+      }
+    },
+    {
+      "type": "metric",
+      "x": 12,
+      "y": 6,
+      "width": 12,
+      "height": 6,
+      "properties": {
+        "metrics": [
+          [ "AWS/Events", "MatchedRules", "EventBusName", "terra-environmental-bus", { "stat": "Sum" } ],
+          [ "AWS/SNS", "NumberOfMessagesPublished", "TopicName", "TerraHazardousAirAlerts", { "stat": "Sum" } ]
+        ],
+        "view": "timeSeries",
+        "region": "us-east-1",
+        "title": "Amazon EventBridge & SNS Emergency Fanout"
+      }
+    }
+  ]
+}

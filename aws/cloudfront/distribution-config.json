@@ -1,0 +1,42 @@
+{
+  "CallerReference": "terra-environmental-twin-cf-v1",
+  "Aliases": {
+    "Quantity": 0
+  },
+  "DefaultRootObject": "index.html",
+  "Origins": {
+    "Quantity": 1,
+    "Items": [
+      {
+        "Id": "S3-TerraWebClientOrigin",
+        "DomainName": "terra-frontend-dist.s3.us-east-1.amazonaws.com",
+        "OriginPath": "",
+        "CustomHeaders": {
+          "Quantity": 0
+        },
+        "S3OriginConfig": {
+          "OriginAccessIdentity": "origin-access-identity/cloudfront/E123456789ABCD"
+        }
+      }
+    ]
+  },
+  "DefaultCacheBehavior": {
+    "TargetOriginId": "S3-TerraWebClientOrigin",
+    "ViewerProtocolPolicy": "redirect-to-https",
+    "AllowedMethods": {
+      "Quantity": 3,
+      "Items": [ "GET", "HEAD", "OPTIONS" ],
+      "CachedMethods": {
+        "Quantity": 2,
+        "Items": [ "GET", "HEAD" ]
+      }
+    },
+    "Compress": true,
+    "MinTTL": 0,
+    "DefaultTTL": 86400,
+    "MaxTTL": 31536000
+  },
+  "Comment": "TERRA 3D Environmental Digital Twin CloudFront Global Edge Distribution",
+  "Enabled": true,
+  "PriceClass": "PriceClass_100"
+}

@@ -1,0 +1,126 @@
+{
+  "Comment": "TERRA Environmental Incident Verification & Alert Fanout State Machine",
+  "StartAt": "ValidateReportPayload",
+  "States": {
+    "ValidateReportPayload": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "Parameters": {
+        "FunctionName": "arn:aws:lambda:us-east-1:123456789012:function:TerraValidatePayload",
+        "Payload.$": "$"
+      },
+      "ResultPath": "$.validatedPayload",
+      "Next": "ParallelVerification"
+    },
+    "ParallelVerification": {
+      "Type": "Parallel",
+      "Branches": [
+        {
+          "StartAt": "SageMakerAnomalyInference",
+          "States": {
+            "SageMakerAnomalyInference": {
+              "Type": "Task",
+              "Resource": "arn:aws:states:::sagemaker:invokeEndpoint",
+              "Parameters": {
+                "EndpointName": "terra-aerosol-anomaly-detector",
+                "ContentType": "application/json",
+                "Body": {
+                  "latitude.$": "$.validatedPayload.Payload.latitude",
+                  "longitude.$": "$.validatedPayload.Payload.longitude",
+                  "pollutionType.$": "$.validatedPayload.Payload.pollutionType",
+                  "pm25.$": "$.validatedPayload.Payload.pm25"
+                }
+              },
+              "End": true
+            }
+          }
+        },
+        {
+          "StartAt": "VerifyS3EvidenceImage",
+          "States": {
+            "VerifyS3EvidenceImage": {
+              "Type": "Task",
+              "Resource": "arn:aws:states:::lambda:invoke",
+              "Parameters": {
+                "FunctionName": "arn:aws:lambda:us-east-1:123456789012:function:TerraVerifyS3Evidence",
+                "Payload.$": "$.validatedPayload.Payload"
+              },
+              "End": true
+            }
+          }
+        }
+      ],
+      "ResultPath": "$.verificationResults",
+      "Next": "SaveToDynamoDB"
+    },
+    "SaveToDynamoDB": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::dynamodb:putItem",
+      "Parameters": {
+        "TableName": "TerraReports",
+        "Item": {
+          "ReportId": { "S.$": "$.validatedPayload.Payload.reportId" },
+          "CityName": { "S.$": "$.validatedPayload.Payload.cityName" },
+          "Latitude": { "N.$": "$.validatedPayload.Payload.latitude" },
+          "Longitude": { "N.$": "$.validatedPayload.Payload.longitude" },
+          "PollutionType": { "S.$": "$.validatedPayload.Payload.pollutionType" },
+          "Severity": { "S.$": "$.validatedPayload.Payload.severity" },
+          "Status": { "S": "Verified" },
+          "AnomalyScore": { "N.$": "$.verificationResults[0].AnomalyScore" },
+          "Timestamp": { "S.$": "$.validatedPayload.Payload.timestamp" }
+        }
+      },
+      "ResultPath": "$.dynamoResult",
+      "Next": "CheckHazardSeverity"
+    },
+    "CheckHazardSeverity": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Or": [
+            { "Variable": "$.validatedPayload.Payload.severity", "StringEquals": "severe" },
+            { "Variable": "$.validatedPayload.Payload.severity", "StringEquals": "critical" }
+          ],
+          "Next": "PublishEventBridgeAlert"
+        }
+      ],
+      "Default": "CompleteIncidentVerification"
+    },
+    "PublishEventBridgeAlert": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::events:putEvents",
+      "Parameters": {
+        "Entries": [
+          {
+            "EventBusName": "terra-environmental-bus",
+            "Source": "terra.incident.engine",
+            "DetailType": "HazardousAirQualityAlert",
+            "Detail": {
+              "reportId.$": "$.validatedPayload.Payload.reportId",
+              "cityName.$": "$.validatedPayload.Payload.cityName",
+              "severity.$": "$.validatedPayload.Payload.severity",
+              "coordinates": [
+                "$.validatedPayload.Payload.longitude",
+                "$.validatedPayload.Payload.latitude"
+              ]
+            }
+          }
+        ]
+      },
+      "Next": "SendSnsEmergencyNotification"
+    },
+    "SendSnsEmergencyNotification": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::sns:publish",
+      "Parameters": {
+        "TopicArn": "arn:aws:sns:us-east-1:123456789012:TerraHazardousAirAlerts",
+        "Subject": "TERRA Environmental Alert: Hazardous Air Quality Detected",
+        "Message.$": "States.Format('CRITICAL AIR ALERT: {} in {}. Hazardous exposure threshold exceeded.', $.validatedPayload.Payload.pollutionType, $.validatedPayload.Payload.cityName)"
+      },
+      "Next": "CompleteIncidentVerification"
+    },
+    "CompleteIncidentVerification": {
+      "Type": "Succeed"
+    }
+  }
+}

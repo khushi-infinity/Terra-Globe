@@ -1,0 +1,42 @@
+version: '3.8'
+
+# ==============================================================================
+# TERRA AWS LocalStack Sandbox (No AWS Account, No Credit Card, Zero Bill)
+# Runs S3, DynamoDB, Lambda, API Gateway, SQS, SNS, EventBridge, and Cognito locally!
+# ==============================================================================
+
+services:
+  localstack:
+    container_name: terra-localstack-sandbox
+    image: localstack/localstack:latest
+    ports:
+      - "4566:4566"            # LocalStack Gateway & all AWS service endpoints
+      - "4510-4559:4510-4559"  # External service port ranges
+    environment:
+      - SERVICES=s3,dynamodb,lambda,apigateway,events,sns,sqs,cognito-idp
+      - AWS_DEFAULT_REGION=us-east-1
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - DEBUG=1
+    volumes:
+      - "${LOCALSTACK_VOLUME_DIR:-./.localstack}:/var/lib/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+
+  terra-app:
+    container_name: terra-digital-twin-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      - AWS_REGION=us-east-1
+      - AWS_ENDPOINT_URL=http://localstack:4566
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+      - TERRA_S3_BUCKET=terra-evidence-storage
+      - DYNAMODB_REPORTS_TABLE=TerraReports
+      - DYNAMODB_POSTS_TABLE=TerraPosts
+    depends_on:
+      - localstack
