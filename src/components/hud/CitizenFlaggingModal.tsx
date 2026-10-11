@@ -102,8 +102,16 @@ export const CitizenFlaggingModal: React.FC = () => {
     if (!file) return;
 
     setImageFile(file);
-    setImagePreview(URL.createObjectURL(file));
     setErrorMessage('');
+
+    // Read as persistent DataURL immediately for instant preview and offline preservation
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const dataUrl = event.target?.result as string;
+      setImagePreview(dataUrl);
+      setS3UploadedUrl(dataUrl);
+    };
+    reader.readAsDataURL(file);
 
     try {
       setIsUploadingImage(true);
@@ -137,9 +145,9 @@ export const CitizenFlaggingModal: React.FC = () => {
       setUploadProgress(100);
       setS3UploadedUrl(publicUrl);
       setIsUploadingImage(false);
-    } catch (err: any) {
+    } catch {
       setIsUploadingImage(false);
-      setS3UploadedUrl(imagePreview || 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=800&q=80');
+      // The reader already saved imagePreview / s3UploadedUrl as dataUrl fallback
     }
   };
 
@@ -154,7 +162,7 @@ export const CitizenFlaggingModal: React.FC = () => {
     setErrorMessage('');
 
     try {
-      const finalImageUrl = s3UploadedUrl || (
+      const finalImageUrl = s3UploadedUrl || imagePreview || (
         pollutionType === 'stubble_burning'
           ? 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=800&q=80'
           : pollutionType === 'factory_smoke'

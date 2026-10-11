@@ -1,0 +1,123 @@
+import { TerraReport, TerraPost } from '../types';
+
+export const INITIAL_TERRA_REPORTS: TerraReport[] = [
+  {
+    id: 'rep_init_1',
+    cityName: 'Delhi NCR',
+    latitude: 28.6562,
+    longitude: 77.2410,
+    pollutionType: 'stubble_burning',
+    severity: 'critical',
+    imageUrl: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=800&q=80',
+    description: 'Seasonal crop residue burn plume blowing south-east over Anand Vihar. Strong acrid odor and PM2.5 spike above 380 µg/m³.',
+    timestamp: new Date(Date.now() - 3600000 * 3).toISOString(),
+    status: 'Investigating',
+    authorName: 'Aarav Sharma',
+    upvotes: 42
+  },
+  {
+    id: 'rep_init_2',
+    cityName: 'Delhi NCR',
+    latitude: 28.6139,
+    longitude: 77.2090,
+    pollutionType: 'construction',
+    severity: 'high',
+    imageUrl: 'https://images.unsplash.com/photo-1611273426858-450d8e3c9fce?auto=format&fit=crop&w=800&q=80',
+    description: 'Uncovered dry excavation site producing fugitive dust plumes across arterial ring road without water misting.',
+    timestamp: new Date(Date.now() - 3600000 * 7).toISOString(),
+    status: 'Verified',
+    authorName: 'Pooja Verma',
+    upvotes: 28
+  },
+  {
+    id: 'rep_init_3',
+    cityName: 'Bengaluru',
+    latitude: 12.9716,
+    longitude: 77.5946,
+    pollutionType: 'waste_burning',
+    severity: 'high',
+    imageUrl: 'https://images.unsplash.com/photo-1530587191325-3db32d826c18?auto=format&fit=crop&w=800&q=80',
+    description: 'Unauthorized municipal solid plastic burning in open storm drain near Outer Ring Road corridor. Dense toxic smoke billowing into residential sector.',
+    timestamp: new Date(Date.now() - 3600000 * 12).toISOString(),
+    status: 'Action Scheduled',
+    authorName: 'Rohan Nambiar',
+    upvotes: 35
+  },
+  {
+    id: 'rep_init_4',
+    cityName: 'Paris',
+    latitude: 48.8566,
+    longitude: 2.3522,
+    pollutionType: 'vehicle_fleet',
+    severity: 'moderate',
+    imageUrl: 'https://images.unsplash.com/photo-1514565131-fce0801e5785?auto=format&fit=crop&w=800&q=80',
+    description: 'Heavy diesel logistics idling during peak traffic ban hours adjacent to Seine school district.',
+    timestamp: new Date(Date.now() - 3600000 * 18).toISOString(),
+    status: 'Investigating',
+    authorName: 'Camille Laurent',
+    upvotes: 19
+  }
+];
+
+export const INITIAL_TERRA_POSTS: TerraPost[] = [
+  {
+    id: 'post_1',
+    cityName: 'Delhi NCR',
+    areaName: 'Anand Vihar',
+    timestamp: new Date(Date.now() - 3600000 * 2).toISOString(),
+    postType: 'complaint',
+    authorName: 'Aarav Sharma',
+    authorEmail: 'aarav.sharma@delhi-cleanair.org',
+    authorRole: 'Air Quality Sentinel',
+    authorAvatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=160&q=80',
+    title: '🚨 Severe Stubble Smoke Intrusion Detected at Anand Vihar ISBT',
+    content: 'PM2.5 sensor spiked to 412 µg/m³ this evening as winds shifted north-westerly. Strong acrid odor in residential blocks. Immediate N95 mask advisory recommended for all outdoor commuters.',
+    imageUrl: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=800&q=80',
+    upvotes: 84,
+    hasUserUpvoted: false,
+    commentsCount: 14,
+    coordinates: [77.3150, 28.6470],
+    taggedAuthorities: ['@CPCB_OFFICIAL', '@DelhiPollutionControl']
+  },
+  {
+    id: 'post_2',
+    cityName: 'Delhi NCR',
+    areaName: 'Wazirabad',
+    timestamp: new Date(Date.now() - 3600000 * 6).toISOString(),
+    postType: 'volunteer',
+    authorName: 'Yamuna Restoration Youth Circle',
+    authorEmail: 'volunteer@yamunacircle.in',
+    authorRole: 'River Basin Volunteer',
+    authorAvatar: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?auto=format&fit=crop&w=160&q=80',
+    title: '🤝 Yamuna Ghat Plastic & Floating Silt Cleanup Drive',
+    content: 'Organizing a community cleaning session to clear single-use plastic clogs and aerate stagnant water near Wazirabad Barrage. Safety gloves and disposal bags will be provided.',
+    imageUrl: 'https://images.unsplash.com/photo-1618477461853-cf6ed80faba5?auto=format&fit=crop&w=800&q=80',
+    eventDate: 'Saturday, Oct 18 • 07:00 AM IST',
+    rsvpCount: 46,
+    hasUserRsvped: false,
+    upvotes: 67,
+    hasUserUpvoted: false,
+    commentsCount: 9,
+    coordinates: [77.2280, 28.7120]
+  },
+  {
+    id: 'post_3',
+    cityName: 'Delhi NCR',
+    areaName: 'Dwarka',
+    timestamp: new Date(Date.now() - 3600000 * 12).toISOString(),
+    postType: 'fundraise',
+    authorName: 'Dwarka Green Canopy Trust',
+    authorEmail: 'green@dwarkatrust.org',
+    authorRole: 'Community Trustee',
+    authorAvatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=160&q=80',
+    title: '💰 Crowdfunding 25 Low-Cost IoT Particulate Sensors for Sector 14-22',
+    content: 'We need hyper-local continuous air quality monitors across schools and retirement parks to pinpoint micro-pollution hot spots. Target is $1,200 for solar-powered units.',
+    imageUrl: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80',
+    targetGoal: 1200,
+    currentAmount: 890,
+    upvotes: 112,
+    hasUserUpvoted: false,
+    commentsCount: 23,
+    coordinates: [77.0350, 28.5920]
+  }
+];

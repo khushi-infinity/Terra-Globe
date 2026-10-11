@@ -29,6 +29,43 @@ import { RealAirQuality } from '../services/airQualityService';
 import { RealWeather } from '../services/weatherService';
 import { SupportedLanguage } from '../i18n/translations';
 import { computeBiologicalAge } from '../services/bioAgeService';
+import { INITIAL_TERRA_REPORTS, INITIAL_TERRA_POSTS } from '../data/seedTerraData';
+
+const getInitialReports = (): TerraReport[] => {
+  try {
+    const saved = localStorage.getItem('terra_local_reports');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        const map = new Map<string, TerraReport>();
+        INITIAL_TERRA_REPORTS.forEach(r => map.set(r.id, r));
+        parsed.forEach(r => map.set(r.id, r));
+        return Array.from(map.values());
+      }
+    }
+  } catch {
+    // ignore
+  }
+  return INITIAL_TERRA_REPORTS;
+};
+
+const getInitialPosts = (): TerraPost[] => {
+  try {
+    const saved = localStorage.getItem('terra_local_posts');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        const map = new Map<string, TerraPost>();
+        INITIAL_TERRA_POSTS.forEach(p => map.set(p.id, p));
+        parsed.forEach(p => map.set(p.id, p));
+        return Array.from(map.values());
+      }
+    }
+  } catch {
+    // ignore
+  }
+  return INITIAL_TERRA_POSTS;
+};
 
 const getInitialLanguage = (): SupportedLanguage => {
   try {
@@ -373,46 +410,128 @@ export const useAppStore = create<AppState>((set, get) => ({
   setCitizenFlaggingOpen: (open: boolean) => set({ isCitizenFlaggingOpen: open }),
   flaggingDefaultCoords: null,
   setFlaggingDefaultCoords: (coords) => set({ flaggingDefaultCoords: coords }),
-  terraReports: [],
+  terraReports: getInitialReports(),
   selectedTerraReport: null,
   setSelectedTerraReport: (report) => set({ selectedTerraReport: report }),
 
   fetchTerraReports: async (bounds) => {
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 3000);
       let url = '/api/aws/dynamodb/reports';
       if (bounds) {
         url += `?north=${bounds.north}&south=${bounds.south}&east=${bounds.east}&west=${bounds.west}`;
       }
-      const res = await fetch(url);
+      const res = await fetch(url, { signal: controller.signal });
+      clearTimeout(timeoutId);
       if (res.ok) {
         const json = await res.json();
-        set({ terraReports: json.reports || [] });
+        const serverReports: TerraReport[] = json.reports || [];
+        const localSaved: TerraReport[] = JSON.parse(localStorage.getItem('terra_local_reports') || '[]');
+        const map = new Map<string, TerraReport>();
+        serverReports.forEach(r => map.set(r.id, r));
+        localSaved.forEach(r => map.set(r.id, r));
+        set({ terraReports: Array.from(map.values()) });
+        return;
       }
-    } catch (e) {
-      console.warn('Failed to fetch DynamoDB reports:', e);
+    } catch {
+      // API fallback
     }
+    set({ terraReports: getInitialReports() });
   },
 
   submitTerraReport: async (reportData) => {
-    const res = await fetch('/api/aws/dynamodb/reports', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(reportData)
+    let created: TerraReport;
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 3500);
+
+      const res = await fetch('/api/aws/dynamodb/reports', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        signal: controller.signal,
+        body: JSON.stringify(reportData)
+      });
+      clearTimeout(timeoutId);
+
+      if (res.ok) {
+        const json = await res.json();
+        created = json.report;
+      } else {
+        throw new Error('API unavailable');
+      }
+    } catch {
+      // Offline / S3 Static hosting fallback
+      const reportId = `rep_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+      created = {
+        id: reportId,
+        cityName: reportData.cityName || 'Active Region',
+        latitude: Number(reportData.latitude),
+        longitude: Number(reportData.longitude),
+        pollutionType: reportData.pollutionType,
+        severity: reportData.severity || 'high',
+        imageUrl: reportData.imageUrl || 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=800&q=80',
+        description: reportData.description,
+        timestamp: new Date().toISOString(),
+        status: 'Investigating',
+        authorName: reportData.authorName || 'Citizen Sentinel',
+        authorEmail: reportData.authorEmail || 'citizen@terra.earth',
+        upvotes: 1
+      };
+    }
+
+    // Persist in local state and localStorage
+    set(s => {
+      const updated = [created, ...s.terraReports.filter(r => r.id !== created.id)];
+      try {
+        localStorage.setItem('terra_local_reports', JSON.stringify(updated));
+      } catch {
+        // ignore
+      }
+      return {
+        terraReports: updated,
+        isCitizenFlaggingOpen: false
+      };
     });
-    if (!res.ok) throw new Error('Failed to register pollution report');
-    const json = await res.json();
-    const created: TerraReport = json.report;
-    set(s => ({
-      terraReports: [created, ...s.terraReports],
-      isCitizenFlaggingOpen: false
-    }));
-    // Refresh posts as well
-    get().fetchTerraPosts();
+
+    // Also auto-generate a matching Community Feed post
+    try {
+      const newPost: TerraPost = {
+        id: `post_${created.id}`,
+        cityName: created.cityName,
+        areaName: `${created.cityName} Sector`,
+        timestamp: created.timestamp,
+        postType: 'complaint',
+        authorName: created.authorName,
+        authorEmail: created.authorEmail || 'citizen@terra.earth',
+        authorRole: 'Citizen Sentinel',
+        authorAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=160&q=80',
+        title: `🚨 ${created.pollutionType.replace('_', ' ').toUpperCase()}: Citizen Incident Report`,
+        content: created.description,
+        imageUrl: created.imageUrl,
+        upvotes: 1,
+        hasUserUpvoted: false,
+        commentsCount: 0,
+        coordinates: [created.longitude, created.latitude]
+      };
+      set(s => {
+        const updatedPosts = [newPost, ...s.terraPosts.filter(p => p.id !== newPost.id)];
+        try {
+          localStorage.setItem('terra_local_posts', JSON.stringify(updatedPosts));
+        } catch {
+          // ignore
+        }
+        return { terraPosts: updatedPosts };
+      });
+    } catch {
+      // ignore
+    }
+
     return created;
   },
 
   // Localized Community Social Feed & Cognito
-  terraPosts: [],
+  terraPosts: getInitialPosts(),
   feedCategory: 'all',
   feedCityFilter: 'Delhi',
   feedAreaFilter: 'all',
@@ -446,93 +565,188 @@ export const useAppStore = create<AppState>((set, get) => ({
       let url = `/api/aws/dynamodb/posts?cityName=${encodeURIComponent(city)}`;
       if (cat !== 'all') url += `&category=${encodeURIComponent(cat)}`;
       if (area && area !== 'all') url += `&areaName=${encodeURIComponent(area)}`;
-      const res = await fetch(url);
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 3000);
+      const res = await fetch(url, { signal: controller.signal });
+      clearTimeout(timeoutId);
       if (res.ok) {
         const json = await res.json();
-        set({ terraPosts: json.posts || [] });
+        const serverPosts: TerraPost[] = json.posts || [];
+        const localSaved: TerraPost[] = JSON.parse(localStorage.getItem('terra_local_posts') || '[]');
+        const map = new Map<string, TerraPost>();
+        serverPosts.forEach(p => map.set(p.id, p));
+        localSaved.forEach(p => map.set(p.id, p));
+        set({ terraPosts: Array.from(map.values()) });
+        return;
       }
-    } catch (e) {
-      console.warn('Failed to fetch posts:', e);
+    } catch {
+      // API fallback
     }
+    set({ terraPosts: getInitialPosts() });
   },
 
   submitTerraPost: async (postData) => {
     const user = get().userSession;
     const currentCity = get().currentLocation.name;
-    const res = await fetch('/api/aws/dynamodb/posts', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
+    let created: TerraPost;
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 3500);
+      const res = await fetch('/api/aws/dynamodb/posts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        signal: controller.signal,
+        body: JSON.stringify({
+          cityName: postData.cityName || currentCity,
+          postType: postData.postType || 'discuss',
+          authorName: user.name,
+          authorEmail: user.email,
+          authorRole: user.role,
+          authorAvatar: user.avatarUrl,
+          ...postData
+        })
+      });
+      clearTimeout(timeoutId);
+      if (res.ok) {
+        const json = await res.json();
+        created = json.post;
+      } else {
+        throw new Error('API unavailable');
+      }
+    } catch {
+      const postId = `post_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+      created = {
+        id: postId,
         cityName: postData.cityName || currentCity,
+        areaName: postData.areaName || `${currentCity} Sector`,
+        timestamp: new Date().toISOString(),
         postType: postData.postType || 'discuss',
         authorName: user.name,
         authorEmail: user.email,
         authorRole: user.role,
         authorAvatar: user.avatarUrl,
-        ...postData
-      })
+        title: postData.title || 'Community Observation',
+        content: postData.content || '',
+        imageUrl: postData.imageUrl,
+        targetGoal: postData.targetGoal,
+        currentAmount: postData.currentAmount || 0,
+        eventDate: postData.eventDate,
+        rsvpCount: 0,
+        hasUserRsvped: false,
+        upvotes: 1,
+        hasUserUpvoted: false,
+        commentsCount: 0,
+        coordinates: postData.coordinates || get().currentLocation.center
+      };
+    }
+
+    set(s => {
+      const updated = [created, ...s.terraPosts.filter(p => p.id !== created.id)];
+      try {
+        localStorage.setItem('terra_local_posts', JSON.stringify(updated));
+      } catch {
+        // ignore
+      }
+      return {
+        terraPosts: updated,
+        isCreatePostOpen: false
+      };
     });
-    if (!res.ok) throw new Error('Failed to publish post');
-    const json = await res.json();
-    const created: TerraPost = json.post;
-    set(s => ({
-      terraPosts: [created, ...s.terraPosts],
-      isCreatePostOpen: false
-    }));
     return created;
   },
 
   upvotePost: async (id) => {
+    // Update local state first
+    set(s => {
+      const updated = s.terraPosts.map(p => {
+        if (p.id === id) {
+          const nextUpvoted = !p.hasUserUpvoted;
+          return {
+            ...p,
+            hasUserUpvoted: nextUpvoted,
+            upvotes: nextUpvoted ? p.upvotes + 1 : Math.max(0, p.upvotes - 1)
+          };
+        }
+        return p;
+      });
+      try {
+        localStorage.setItem('terra_local_posts', JSON.stringify(updated));
+      } catch {
+        // ignore
+      }
+      return { terraPosts: updated };
+    });
+
     try {
-      const res = await fetch(`/api/aws/dynamodb/posts/${id}/action`, {
+      await fetch(`/api/aws/dynamodb/posts/${id}/action`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'upvote' })
       });
-      if (res.ok) {
-        const json = await res.json();
-        set(s => ({
-          terraPosts: s.terraPosts.map(p => (p.id === id ? { ...p, ...json.post } : p))
-        }));
-      }
-    } catch (e) {
-      console.warn('Failed to upvote post:', e);
+    } catch {
+      // Silent on API failure
     }
   },
 
   rsvpPost: async (id) => {
+    set(s => {
+      const updated = s.terraPosts.map(p => {
+        if (p.id === id) {
+          const nextRsvped = !p.hasUserRsvped;
+          return {
+            ...p,
+            hasUserRsvped: nextRsvped,
+            rsvpCount: (p.rsvpCount || 0) + (nextRsvped ? 1 : -1)
+          };
+        }
+        return p;
+      });
+      try {
+        localStorage.setItem('terra_local_posts', JSON.stringify(updated));
+      } catch {
+        // ignore
+      }
+      return { terraPosts: updated };
+    });
+
     try {
-      const res = await fetch(`/api/aws/dynamodb/posts/${id}/action`, {
+      await fetch(`/api/aws/dynamodb/posts/${id}/action`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'rsvp' })
       });
-      if (res.ok) {
-        const json = await res.json();
-        set(s => ({
-          terraPosts: s.terraPosts.map(p => (p.id === id ? { ...p, ...json.post } : p))
-        }));
-      }
-    } catch (e) {
-      console.warn('Failed to rsvp post:', e);
+    } catch {
+      // Silent on API failure
     }
   },
 
   donatePost: async (id, amount) => {
+    set(s => {
+      const updated = s.terraPosts.map(p => {
+        if (p.id === id) {
+          return {
+            ...p,
+            currentAmount: (p.currentAmount || 0) + amount
+          };
+        }
+        return p;
+      });
+      try {
+        localStorage.setItem('terra_local_posts', JSON.stringify(updated));
+      } catch {
+        // ignore
+      }
+      return { terraPosts: updated };
+    });
+
     try {
-      const res = await fetch(`/api/aws/dynamodb/posts/${id}/action`, {
+      await fetch(`/api/aws/dynamodb/posts/${id}/action`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'donate', amount })
       });
-      if (res.ok) {
-        const json = await res.json();
-        set(s => ({
-          terraPosts: s.terraPosts.map(p => (p.id === id ? { ...p, ...json.post } : p))
-        }));
-      }
-    } catch (e) {
-      console.warn('Failed to donate to post:', e);
+    } catch {
+      // Silent on API failure
     }
   },
 
