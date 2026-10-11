@@ -6,7 +6,9 @@ import { STSClient, GetCallerIdentityCommand } from '@aws-sdk/client-sts';
 
 // Region configuration
 export const AWS_REGION = process.env.AWS_REGION || 'us-east-1';
-export const S3_BUCKET_NAME = process.env.TERRA_S3_BUCKET || 'terra-evidence-storage';
+export const S3_BUCKET_NAME = (process.env.TERRA_S3_BUCKET && process.env.TERRA_S3_BUCKET !== 'terra-evidence-storage')
+  ? process.env.TERRA_S3_BUCKET
+  : 'terra-evidence-552952091217';
 export const DYNAMODB_REPORTS_TABLE = process.env.DYNAMODB_REPORTS_TABLE || 'TerraReports';
 export const DYNAMODB_POSTS_TABLE = process.env.DYNAMODB_POSTS_TABLE || 'TerraPosts';
 

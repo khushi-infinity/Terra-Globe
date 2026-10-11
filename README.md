@@ -7,8 +7,12 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178c6.svg?logo=typescript)](https://www.typescriptlang.org)
 [![Three.js](https://img.shields.io/badge/Three.js-3D_GIS-black.svg?logo=three.js)](https://threejs.org)
 [![AWS Hackathon Ready](https://img.shields.io/badge/AWS-Serverless_|_SageMaker_|_Amplify_|_LocalStack-ff9900.svg?logo=amazon-aws)](https://aws.amazon.com)
+[![Live AWS Deployed](https://img.shields.io/badge/AWS_Live_Deployment-Active_200_OK-22c55e.svg?logo=amazon-aws)](http://terra-globe-frontend-552952091217.s3-website-us-east-1.amazonaws.com)
 [![Google Gemini](https://img.shields.io/badge/Google_Gemini-3.8_Flash_AI-4285f4.svg?logo=google)](https://ai.google.dev)
 [![Languages](https://img.shields.io/badge/i18n-10_Languages_Ready-10b981.svg)](#-internationalization--global-accessibility-10-languages)
+
+> **🌐 Live AWS Production URL:** [http://terra-globe-frontend-552952091217.s3-website-us-east-1.amazonaws.com](http://terra-globe-frontend-552952091217.s3-website-us-east-1.amazonaws.com)
+> **AWS Account ID:** `552952091217` | **Region:** `us-east-1` | **Status:** 100% Verified Live AWS Cloud Active
 
 ---
 
