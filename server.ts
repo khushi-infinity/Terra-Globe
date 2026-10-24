@@ -389,7 +389,7 @@ app.get('/api/health', (req: Request, res: Response) => {
   });
 });
 
-// --- AWS ARCHITECTURE METADATA & HACKATHON MATRIX (FOR JUDGES & EVALUATORS) ---
+// --- AWS ARCHITECTURE METADATA & DEPLOYMENT MATRIX ---
 app.get('/api/aws/architecture', async (req: Request, res: Response) => {
   const credentialsVerification = await verifyAwsCredentials();
 
@@ -397,7 +397,7 @@ app.get('/api/aws/architecture', async (req: Request, res: Response) => {
     ...AWS_ARCHITECTURE_INFO,
     hasCredentialsConfigured: hasAwsCredentials,
     credentialsVerification,
-    hackathonMatrix: {
+    deploymentMatrix: {
       agentsAndAi: {
         buildIt: 'Strands Agents SDK & PartyRock (aws/partyrock/terra-environmental-prompts.json)',
         shipIt: 'Amazon SageMaker AI Real-Time Endpoint (terra-aerosol-anomaly-detector)',

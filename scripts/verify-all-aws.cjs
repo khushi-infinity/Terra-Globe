@@ -12,7 +12,7 @@ const region = process.env.AWS_REGION || 'us-east-1';
 
 async function runVerification() {
   console.log('===============================================================');
-  console.log('   TERRA — AWS HACKATHON LIVE INFRASTRUCTURE VERIFICATION');
+  console.log('   TERRA — AWS LIVE INFRASTRUCTURE VERIFICATION');
   console.log('===============================================================');
 
   // 1. AWS STS
@@ -69,7 +69,7 @@ async function runVerification() {
 
   // 5. Summary
   console.log('\n===============================================================');
-  console.log('   ALL AWS SERVICES VERIFIED AND OPERATIONAL FOR EVALUATION');
+  console.log('   ALL AWS SERVICES VERIFIED AND OPERATIONAL');
   console.log('   • Account ID       : ' + identity.Account);
   console.log('   • Region           : ' + region);
   console.log('   • Live Deployed URL: ' + liveUrl);

@@ -227,7 +227,7 @@ export const DemoController: React.FC = () => {
               <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
             </span>
             <span className="text-xs font-bold uppercase font-tech tracking-wider text-emerald-300">
-              LIVE HACKATHON DEMO MODE
+              LIVE DEMO MODE
             </span>
             <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-black/50 text-slate-300 border border-white/10">
               Step {currentStep + 1} / {steps.length}

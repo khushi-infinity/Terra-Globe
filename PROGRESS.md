@@ -31,7 +31,7 @@ Mission: **See it. Personalize it. Act on it.**
 | **3. Act On It** | **AWS S3 Pre-Signed URL** Evidence Pipeline | ✅ Complete | Direct client-to-S3 upload (`PUT presigned-url`) minimizing server load with IAM least-privilege policies. |
 | **3. Act On It** | **Amazon DynamoDB** Integration (`TerraReports` & `TerraPosts`) | ✅ Complete | Serverless database storage with bounding box queries for map beacons and reverse chronological partition key queries for feeds. |
 | **3. Act On It** | **Localized Community Social Feed** (Reddit/Twitter Style) | ✅ Complete | 4 Action Categories (🚨 Reports, 🤝 Volunteers with RSVP counters, 💰 Fundraisers with Tailwind progress bars, 💬 Discussions). |
-| **3. Act On It** | **AWS Cognito User Pool Auth** Modal | ✅ Complete | Email/password sign-in and sign-up with 1-click evaluation demo profiles for hackathon judges. |
+| **3. Act On It** | **AWS Cognito User Pool Auth** Modal | ✅ Complete | Email/password sign-in and sign-up with 1-click demo accounts. |
 | **4. Cloud Proof** | **Thorough AWS Architecture Documentation** in `README.md` | ✅ Complete | Complete cloud topology diagram, DynamoDB schemas, S3 pre-signed upload pipeline, Lambda source code, and IAM policy templates in README. |
 | **4. Cloud Proof** | **AWS Amplify** Setup (`amplify.yml`) | ✅ Complete | Standard production build pipeline configured for Vite React deployment. |
 | **5. Product UI/UX** | **Clean, Non-Duplicated Consumer Interface** | ✅ Complete | Removed duplicate buttons, decluttered viewport, unified navigation into sleek TERRA toggle and single clear actions. |

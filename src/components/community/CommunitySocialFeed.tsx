@@ -207,7 +207,7 @@ export const CommunitySocialFeed: React.FC = () => {
                 onChange={(e) => setFeedCityFilter(e.target.value)}
                 className="bg-slate-800 border border-slate-700 focus:border-emerald-400 rounded-xl px-2.5 py-1 text-xs text-emerald-300 font-semibold outline-none cursor-pointer"
               >
-                <option value="Delhi">📍 Delhi NCR (Hackathon)</option>
+                <option value="Delhi">📍 Delhi NCR</option>
                 <option value="Bengaluru">📍 Bengaluru</option>
                 <option value="all">🌐 All Cities</option>
                 <option value="Paris">📍 Paris</option>

@@ -154,13 +154,13 @@ permit(
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="text-xl font-bold tracking-tight text-white">AWS Cloud Architecture &amp; Hackathon Hub</h2>
+                <h2 className="text-xl font-bold tracking-tight text-white">AWS Cloud Architecture Hub</h2>
                 <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
                   BUILD IT &amp; SHIP IT
                 </span>
               </div>
               <p className="text-xs text-slate-400">
-                Official Hackathon Evaluation &amp; Verification Center • GitHub: <span className="text-amber-300 font-mono">khushi-infinity/Terra-Globe</span>
+                Architecture &amp; Verification Center • GitHub: <span className="text-amber-300 font-mono">khushi-infinity/Terra-Globe</span>
               </p>
             </div>
           </div>
@@ -218,7 +218,7 @@ permit(
             }`}
           >
             <Boxes className="w-4 h-4" />
-            Hackathon Matrix (Build It / Ship It)
+            Architecture Matrix (Build It / Ship It)
           </button>
 
           <button
@@ -260,11 +260,11 @@ permit(
 
         {/* Tab Content */}
         <div className="overflow-y-auto space-y-4 pr-1 text-sm custom-scrollbar flex-1">
-          {/* TAB 1: HACKATHON MATRIX */}
+          {/* TAB 1: ARCHITECTURE MATRIX */}
           {activeTab === 'matrix' && (
             <div className="space-y-4">
               <div className="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-200/90 leading-relaxed">
-                <span className="font-bold text-amber-300">How the Hackathon Rules Apply:</span> The competition specifies two official pathways:
+                <span className="font-bold text-amber-300">Deployment Pathways:</span> The project supports two official pathways:
                 <div className="mt-1.5 grid grid-cols-1 sm:grid-cols-2 gap-2">
                   <div className="p-2 rounded-xl bg-black/40 border border-white/5">
                     <strong className="text-white">Track 1: "Build It"</strong> &mdash; Open source, on your machine. <em>No AWS account, no card, no bill.</em> Fully satisfied via LocalStack (<code className="text-amber-300">docker-compose.localstack.yml</code>), SAM CLI (<code className="text-amber-300">template.yaml</code>), Finch (<code className="text-amber-300">Dockerfile</code>), and Corretto.

@@ -9,7 +9,7 @@ export const SUPPORTED_LOCATIONS: Location[] = [
     zoom: 14.2,
     pitch: 52,
     bearing: -16,
-    description: 'National Capital Territory. Host city of the Hackathon. Tracking stubble burning particulate spikes, Yamuna basin, and local citizen action.',
+    description: 'National Capital Territory. Tracking stubble burning particulate spikes, Yamuna basin, and local citizen action.',
     population: '33.0 Million',
     altitudeMeters: 216,
     climateZone: 'Semi-arid Continental (BSh)'

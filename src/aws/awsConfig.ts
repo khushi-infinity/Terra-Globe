@@ -113,14 +113,14 @@ export async function generateS3PresignedUploadUrl(fileName: string, contentType
     }
   }
 
-  // Simulated Pre-Signed URL for Hackathon / Sandbox environments
+  // Simulated Pre-Signed URL for Local / Sandbox environments
   const uploadUrl = `/api/aws/s3/upload-mock?key=${encodeURIComponent(key)}`;
   const publicUrl = `/api/aws/s3/files/${encodeURIComponent(key)}`;
   return { uploadUrl, publicUrl, key, mode: 'LOCAL_SANDBOX' };
 }
 
 /**
- * Cloud Architecture Metadata for Hackathon Evaluation
+ * Cloud Architecture Metadata
  */
 export const AWS_ARCHITECTURE_INFO = {
   region: AWS_REGION,

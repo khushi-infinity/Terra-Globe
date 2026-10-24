@@ -6,13 +6,13 @@
 [![React](https://img.shields.io/badge/React-19.0-61dafb.svg?logo=react)](https://react.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178c6.svg?logo=typescript)](https://www.typescriptlang.org)
 [![Three.js](https://img.shields.io/badge/Three.js-3D_GIS-black.svg?logo=three.js)](https://threejs.org)
-[![AWS Hackathon Ready](https://img.shields.io/badge/AWS-Serverless_|_SageMaker_|_Amplify_|_LocalStack-ff9900.svg?logo=amazon-aws)](https://aws.amazon.com)
+[![AWS Cloud Stack](https://img.shields.io/badge/AWS-Serverless_|_SageMaker_|_Amplify_|_LocalStack-ff9900.svg?logo=amazon-aws)](https://aws.amazon.com)
 [![Live AWS Deployed](https://img.shields.io/badge/AWS_Live_Deployment-Active_200_OK-22c55e.svg?logo=amazon-aws)](http://terra-globe-frontend-552952091217.s3-website-us-east-1.amazonaws.com)
 [![Google Gemini](https://img.shields.io/badge/Google_Gemini-3.8_Flash_AI-4285f4.svg?logo=google)](https://ai.google.dev)
 [![Languages](https://img.shields.io/badge/i18n-10_Languages_Ready-10b981.svg)](#-internationalization--global-accessibility-10-languages)
 
-> **🌐 Live AWS Production URL:** [http://terra-globe-frontend-552952091217.s3-website-us-east-1.amazonaws.com](http://terra-globe-frontend-552952091217.s3-website-us-east-1.amazonaws.com)
-> **AWS Account ID:** `552952091217` | **Region:** `us-east-1` | **Status:** 100% Verified Live AWS Cloud Active
+> **🌐 Live Deployment:** [http://terra-globe-frontend-552952091217.s3-website-us-east-1.amazonaws.com](http://terra-globe-frontend-552952091217.s3-website-us-east-1.amazonaws.com)
+> **AWS Region:** `us-east-1` | **Status:** Live on AWS Cloud
 
 ---
 
@@ -42,9 +42,9 @@ Production architecture featuring AWS Amplify, Amazon DynamoDB, Amazon S3 direct
 
 ---
 
-## 🏆 AWS Hackathon Architecture Matrix (Build It & Ship It)
+## ☁️ Cloud Architecture & Deployment Matrix (Build Locally & Ship to Cloud)
 
-TERRA is built specifically for the AWS hackathon evaluation criteria, fully supporting both **"Build It" (zero cost, zero bill, runs completely on your machine)** and **"Ship It" (deployed to production with a live URL and AWS Free Tier)**:
+TERRA supports two deployment pathways: **"Build It" (runs completely on your machine with no AWS account or bill)** and **"Ship It" (deployed to production with a live URL on AWS Free Tier)**:
 
 | Category | Build It (Open Source, On Your Machine, No Card, Zero Bill) | Ship It (Deployed in Cloud, Live URL, Free Tier / $200 Credits) | TERRA Implementation File(s) |
 |---|---|---|---|
@@ -221,9 +221,9 @@ Navigate to [http://localhost:3000](http://localhost:3000) to view the live plat
 
 ---
 
-## 🔍 How Judges Can Verify the AWS Implementation & Proof
+## 🔍 How to Verify the AWS Implementation & Proof
 
-The AWS Hackathon evaluation requires rigorous verification. Here is how judges can verify every tier of the AWS integration:
+Here is how you can verify every tier of the AWS integration:
 
 ### 1. Proof of Code & Official AWS SDK v3
 - **Zero Mock Wrapper Illusion**: All cloud data pipelines in `src/aws/awsConfig.ts` and `server.ts` use official AWS SDK packages:
@@ -242,9 +242,9 @@ Every architectural requirement has production-ready IaC templates in the reposi
 - **Amazon OpenSearch**: `aws/opensearch/terra-index-mapping.json` (Geospatial coordinate and text analyzer mapping).
 - **AWS App Runner & Amplify**: `apprunner.yaml` & `amplify.yml`.
 
-### 3. Proof of Both Hackathon Pathways
-- **Track 1 ("Build It")**: Judges without an AWS account can run `docker compose -f docker-compose.localstack.yml up -d` to spin up local S3, DynamoDB, Lambda, API Gateway, and EventBridge at zero cost with zero bill.
-- **Track 2 ("Ship It")**: Judges or evaluators deploying with an AWS account can link this GitHub repository (`khushi-infinity/Terra-Globe`) directly to AWS Amplify Hosting or execute `sam deploy --guided`.
+### 3. Proof of Both Deployment Pathways
+- **Track 1 ("Build It")**: Anyone without an AWS account can run `docker compose -f docker-compose.localstack.yml up -d` to spin up local S3, DynamoDB, Lambda, API Gateway, and EventBridge at zero cost with zero bill.
+- **Track 2 ("Ship It")**: You can deploy with an AWS account by linking this GitHub repository (`khushi-infinity/Terra-Globe`) directly to AWS Amplify Hosting or execute `sam deploy --guided`.
 
 ---
 
